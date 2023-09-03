@@ -206,7 +206,7 @@ namespace JitterDemo
         MouseState mousePreviousState = new MouseState();
 
         // Store information for drag and drop
-        JVector hitPoint, hitNormal;
+        Vector3 hitPoint, hitNormal;
         SingleBodyConstraints.PointOnPoint grabConstraint;
         RigidBody grabBody;
         float hitDistance = 0.0f;
@@ -242,10 +242,10 @@ namespace JitterDemo
                 padState.IsButtonDown(Buttons.RightThumbstickDown) &&
                 gamePadPreviousState.IsButtonUp(Buttons.RightThumbstickUp))
             {
-                JVector ray = Conversion.ToJitterVector(RayTo(mouseState.X, mouseState.Y));
-                JVector camp = Conversion.ToJitterVector(Camera.Position);
+                Vector3 ray = Conversion.ToJitterVector(RayTo(mouseState.X, mouseState.Y));
+                Vector3 camp = Conversion.ToJitterVector(Camera.Position);
 
-                ray = JVector.Normalize(ray) * 100;
+                ray = Vector3.Normalize(ray) * 100;
 
                 float fraction;
 
@@ -257,8 +257,8 @@ namespace JitterDemo
 
                     if (grabConstraint != null) World.RemoveConstraint(grabConstraint);
 
-                    JVector lanchor = hitPoint - grabBody.Position;
-                    lanchor = JVector.Transform(lanchor, JMatrix.Transpose(grabBody.Orientation));
+                    Vector3 lanchor = hitPoint - grabBody.Position;
+                    lanchor = Vector3.Transform(lanchor, JMatrix.Transpose(grabBody.Orientation));
 
                     grabConstraint = new SingleBodyConstraints.PointOnPoint(grabBody, lanchor);
                     grabConstraint.Softness = 0.01f;
@@ -340,7 +340,7 @@ namespace JitterDemo
 
 
 
-        private bool RaycastCallback(RigidBody body, JVector normal, float fraction)
+        private bool RaycastCallback(RigidBody body, Vector3 normal, float fraction)
         {
             if (body.IsStatic) return false;
             else return true;
@@ -349,7 +349,7 @@ namespace JitterDemo
         RigidBody lastBody = null;
 
         #region Spawn Random Primitive
-        private void SpawnRandomPrimitive(JVector position, JVector velocity)
+        private void SpawnRandomPrimitive(Vector3 position, Vector3 velocity)
         {
             RigidBody body = null;
             int rndn = rndn = random.Next(7);
@@ -375,13 +375,13 @@ namespace JitterDemo
                     body = new RigidBody(new CapsuleShape(1.0f, 0.5f));
                     break;
                 case 5:
-                    Shape b1 = new BoxShape(new JVector(3, 1, 1));
-                    Shape b2 = new BoxShape(new JVector(1, 1, 3));
+                    Shape b1 = new BoxShape(new Vector3(3, 1, 1));
+                    Shape b2 = new BoxShape(new Vector3(1, 1, 3));
                     Shape b3 = new CylinderShape(3.0f, 0.5f);
 
-                    CompoundShape.TransformedShape t1 = new CompoundShape.TransformedShape(b1, JMatrix.Identity, JVector.Zero);
-                    CompoundShape.TransformedShape t2 = new CompoundShape.TransformedShape(b2, JMatrix.Identity, JVector.Zero);
-                    CompoundShape.TransformedShape t3 = new CompoundShape.TransformedShape(b3, JMatrix.Identity, new JVector(0, 0, 0));
+                    CompoundShape.TransformedShape t1 = new CompoundShape.TransformedShape(b1, JMatrix.Identity, Vector3.Zero);
+                    CompoundShape.TransformedShape t2 = new CompoundShape.TransformedShape(b2, JMatrix.Identity, Vector3.Zero);
+                    CompoundShape.TransformedShape t3 = new CompoundShape.TransformedShape(b3, JMatrix.Identity, new Vector3(0, 0, 0));
 
                     CompoundShape ms = new CompoundShape(new CompoundShape.TransformedShape[3] { t1, t2, t3 });
 
@@ -456,7 +456,7 @@ namespace JitterDemo
         #endregion
 
         #region add draw matrices to the different primitives
-        private void AddShapeToDrawList(Shape shape, JMatrix ori, JVector pos)
+        private void AddShapeToDrawList(Shape shape, JMatrix ori, Vector3 pos)
         {
             Primitives3D.GeometricPrimitive primitive = null;
             Matrix scaleMatrix = Matrix.Identity;
@@ -510,15 +510,15 @@ namespace JitterDemo
             {
                 CompoundShape cShape = rb.Shape as CompoundShape;
                 JMatrix orientation = rb.Orientation;
-                JVector position = rb.Position;
+                Vector3 position = rb.Position;
 
                 foreach (var ts in cShape.Shapes)
                 {
-                    JVector pos = ts.Position;
+                    Vector3 pos = ts.Position;
                     JMatrix ori = ts.Orientation;
 
-                    JVector.Transform(ref pos,ref orientation,out pos);
-                    JVector.Add(ref pos, ref position, out pos);
+                    Vector3.Transform(ref pos,ref orientation,out pos);
+                    Vector3.Add(ref pos, ref position, out pos);
 
                     JMatrix.Multiply(ref ori, ref orientation, out ori);
 
@@ -641,14 +641,14 @@ namespace JitterDemo
             //{
             //    foreach (Contact c in a.ContactList)
             //    {
-            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * JVector.Left, c.Position1 + 0.5f * JVector.Right, Color.Green);
-            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * JVector.Up, c.Position1 + 0.5f * JVector.Down, Color.Green);
-            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * JVector.Forward, c.Position1 + 0.5f * JVector.Backward, Color.Green);
+            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * Vector3.Left, c.Position1 + 0.5f * Vector3.Right, Color.Green);
+            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * Vector3.Up, c.Position1 + 0.5f * Vector3.Down, Color.Green);
+            //        DebugDrawer.DrawLine(c.Position1 + 0.5f * Vector3.Forward, c.Position1 + 0.5f * Vector3.Backward, Color.Green);
 
 
-            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * JVector.Left, c.Position2 + 0.5f * JVector.Right, Color.Red);
-            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * JVector.Up, c.Position2 + 0.5f * JVector.Down, Color.Red);
-            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * JVector.Forward, c.Position2 + 0.5f * JVector.Backward, Color.Red);
+            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * Vector3.Left, c.Position2 + 0.5f * Vector3.Right, Color.Red);
+            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * Vector3.Up, c.Position2 + 0.5f * Vector3.Down, Color.Red);
+            //        DebugDrawer.DrawLine(c.Position2 + 0.5f * Vector3.Forward, c.Position2 + 0.5f * Vector3.Backward, Color.Red);
             //    }
             //}
             #endregion

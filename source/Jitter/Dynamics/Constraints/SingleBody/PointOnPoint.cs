@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Dynamics.Constraints.SingleBody
@@ -31,10 +33,10 @@ namespace Jitter.Dynamics.Constraints.SingleBody
 
     public class PointOnPoint : Constraint
     {
-        private JVector localAnchor1;
-        private JVector anchor;
+        private Vector3 localAnchor1;
+        private Vector3 anchor;
 
-        private JVector r1;
+        private Vector3 r1;
 
         private float biasFactor = 0.1f;
         private float softness = 0.01f;
@@ -48,12 +50,12 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// The distance is given by the initial distance between both anchor points.</param>
         /// <param name="anchor2">The anchor point of the second body in world space.
         /// The distance is given by the initial distance between both anchor points.</param>
-        public PointOnPoint(RigidBody body, JVector localAnchor)
+        public PointOnPoint(RigidBody body, Vector3 localAnchor)
             : base(body, null)
         {
             localAnchor1 = localAnchor;
 
-            this.anchor = body.position + JVector.Transform(localAnchor, body.orientation);
+            this.anchor = body.position + Vector3.Transform(localAnchor, body.orientation);
         }
 
         public float AppliedImpulse { get { return accumulatedImpulse; } }
@@ -66,7 +68,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <summary>
         /// The anchor point in the world.
         /// </summary>
-        public JVector Anchor { get { return anchor; } set { anchor = value; } }
+        public Vector3 Anchor { get { return anchor; } set { anchor = value; } }
 
 
         /// <summary>
@@ -79,7 +81,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         float bias;
         float softnessOverDt;
 
-        JVector[] jacobian = new JVector[2];
+        Vector3[] jacobian = new Vector3[2];
 
         /// <summary>
         /// Called once before iteration starts.
@@ -87,20 +89,20 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <param name="timestep">The 5simulation timestep</param>
         public override void PrepareForIteration(float timestep)
         {
-            JVector p1,dp;
-            JVector.Transform(ref localAnchor1, ref body1.orientation, out r1);
-            JVector.Add(ref body1.position, ref r1, out p1);
+            Vector3 p1,dp;
+            Vector3.Transform(ref localAnchor1, ref body1.orientation, out r1);
+            Vector3.Add(ref body1.position, ref r1, out p1);
 
-            JVector.Subtract(ref p1, ref anchor, out dp);
+            Vector3.Subtract(ref p1, ref anchor, out dp);
             float deltaLength = dp.Length();
 
-            JVector n = anchor - p1;
+            Vector3 n = anchor - p1;
             if (n.LengthSquared() != 0.0f) n.Normalize();
 
             jacobian[0] = -1.0f * n;
             jacobian[1] = -1.0f * (r1 % n);
 
-            effectiveMass = body1.inverseMass + JVector.Transform(jacobian[1], body1.invInertiaWorld) * jacobian[1];
+            effectiveMass = body1.inverseMass + Vector3.Transform(jacobian[1], body1.invInertiaWorld) * jacobian[1];
 
             softnessOverDt = softness / timestep;
             effectiveMass += softnessOverDt;
@@ -112,7 +114,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * accumulatedImpulse * jacobian[0];
-                body1.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
+                body1.angularVelocity += Vector3.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
             }
         }
 
@@ -134,7 +136,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * lambda * jacobian[0];
-                body1.angularVelocity += JVector.Transform(lambda * jacobian[1], body1.invInertiaWorld);
+                body1.angularVelocity += Vector3.Transform(lambda * jacobian[1], body1.invInertiaWorld);
             }
         }
 

@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -76,7 +78,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <param name="result">The result.</param>
-        public override void SupportMapping(ref JVector direction, out JVector result)
+        public override void SupportMapping(ref Vector3 direction, out Vector3 result)
         {
             float sigma = (float)Math.Sqrt((float)(direction.X * direction.X + direction.Z * direction.Z));
 

@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Dynamics.Constraints
@@ -70,7 +72,7 @@ namespace Jitter.Dynamics.Constraints
         private float biasFactor = 0.05f;
         private float softness = 0.0f;
 
-        private JVector accumulatedImpulse;
+        private Vector3 accumulatedImpulse;
 
         private JMatrix initialOrientation1, initialOrientation2;
 
@@ -88,7 +90,7 @@ namespace Jitter.Dynamics.Constraints
             //orientationDifference = JMatrix.Transpose(orientationDifference);
         }
 
-        public JVector AppliedImpulse { get { return accumulatedImpulse; } }
+        public Vector3 AppliedImpulse { get { return accumulatedImpulse; } }
 
         public JMatrix InitialOrientationBody1 { get { return initialOrientation1; } set { initialOrientation1 = value; } }
         public JMatrix InitialOrientationBody2 { get { return initialOrientation2; } set { initialOrientation2 = value; } }
@@ -104,7 +106,7 @@ namespace Jitter.Dynamics.Constraints
         public float BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
 
         JMatrix effectiveMass;
-        JVector bias;
+        Vector3 bias;
         float softnessOverDt;
         
         /// <summary>
@@ -128,7 +130,7 @@ namespace Jitter.Dynamics.Constraints
             JMatrix.Transpose(ref orientationDifference, out orientationDifference);
 
             JMatrix q = orientationDifference * body2.invOrientation * body1.orientation;
-            JVector axis;
+            Vector3 axis;
 
             float x = q.M32 - q.M23;
             float y = q.M13 - q.M31;
@@ -138,15 +140,15 @@ namespace Jitter.Dynamics.Constraints
             float t = q.M11 + q.M22 + q.M33;
 
             float angle = (float)Math.Atan2(r, t - 1);
-            axis = new JVector(x, y, z) * angle;
+            axis = new Vector3(x, y, z) * angle;
 
             if (r != 0.0f) axis = axis * (1.0f / r);
 
             bias = axis * biasFactor * (-1.0f / timestep);
 
             // Apply previous frame solution as initial guess for satisfying the constraint.
-            if (!body1.IsStatic) body1.angularVelocity += JVector.Transform(accumulatedImpulse, body1.invInertiaWorld);
-            if (!body2.IsStatic) body2.angularVelocity += JVector.Transform(-1.0f * accumulatedImpulse, body2.invInertiaWorld);
+            if (!body1.IsStatic) body1.angularVelocity += Vector3.Transform(accumulatedImpulse, body1.invInertiaWorld);
+            if (!body2.IsStatic) body2.angularVelocity += Vector3.Transform(-1.0f * accumulatedImpulse, body2.invInertiaWorld);
         }
 
         /// <summary>
@@ -154,16 +156,16 @@ namespace Jitter.Dynamics.Constraints
         /// </summary>
         public override void Iterate()
         {
-            JVector jv = body1.angularVelocity - body2.angularVelocity;
+            Vector3 jv = body1.angularVelocity - body2.angularVelocity;
 
-            JVector softnessVector = accumulatedImpulse * softnessOverDt;
+            Vector3 softnessVector = accumulatedImpulse * softnessOverDt;
 
-            JVector lambda = -1.0f * JVector.Transform(jv+bias+softnessVector, effectiveMass);
+            Vector3 lambda = -1.0f * Vector3.Transform(jv+bias+softnessVector, effectiveMass);
 
             accumulatedImpulse += lambda;
 
-            if(!body1.IsStatic) body1.angularVelocity += JVector.Transform(lambda, body1.invInertiaWorld);
-            if(!body2.IsStatic) body2.angularVelocity += JVector.Transform(-1.0f * lambda, body2.invInertiaWorld);
+            if(!body1.IsStatic) body1.angularVelocity += Vector3.Transform(lambda, body1.invInertiaWorld);
+            if(!body2.IsStatic) body2.angularVelocity += Vector3.Transform(-1.0f * lambda, body2.invInertiaWorld);
         }
 
     }

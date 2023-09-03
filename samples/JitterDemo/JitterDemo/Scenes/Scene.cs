@@ -27,8 +27,8 @@ namespace JitterDemo.Scenes
 
         public void AddGround()
         {
-            ground = new RigidBody(new BoxShape(new JVector(200, 20, 200)));
-            ground.Position = new JVector(0, -10, 0);
+            ground = new RigidBody(new BoxShape(new Vector3(200, 20, 200)));
+            ground.Position = new Vector3(0, -10, 0);
             ground.Tag = BodyTag.DontDrawMe;
             ground.IsStatic = true; Demo.World.AddBody(ground);
             //ground.Restitution = 1.0f;
@@ -45,7 +45,7 @@ namespace JitterDemo.Scenes
             quadDrawer.Dispose();
         }
 
-        public void AddCar(JVector position)
+        public void AddCar(Vector3 position)
         {
             car = new CarObject(Demo);
             this.Demo.Components.Add(car);

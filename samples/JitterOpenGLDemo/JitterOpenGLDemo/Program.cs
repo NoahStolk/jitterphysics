@@ -4,6 +4,7 @@ using Jitter.Collision;
 using Jitter;
 using Jitter.Dynamics;
 using Jitter.Collision.Shapes;
+using System.Numerics;
 
 namespace JitterOpenGLDemo;
 
@@ -35,7 +36,7 @@ public class Program : DrawStuffOtk
     {
         world.Clear();
 
-        RigidBody body = AddBox(new(0, 0, -0.5f), JVector.Zero,
+        RigidBody body = AddBox(new(0, 0, -0.5f), Vector3.Zero,
         new(300, 300, 1));
 
         body.IsStatic = true;
@@ -46,21 +47,21 @@ public class Program : DrawStuffOtk
             for (int e = i; e < 20; e++)
             {
                 AddBox(new(0.0f, (e - i * 0.5f) * 1.01f, 0.5f + i * 1.0f),
-                JVector.Zero, JVector.One);
+                Vector3.Zero, Vector3.One);
             }
         }
     }
 
     private void ShootSphere()
     {
-        dsGetViewPoint(out JVector pos, out JVector ang);
+        dsGetViewPoint(out Vector3 pos, out Vector3 ang);
 
         RigidBody body = new(new SphereShape(1.0f))
         {
             Position = pos,
         };
 
-        JVector unit;
+        Vector3 unit;
         unit.X = (float)Math.Cos(ang.X / 180.0f * JMath.Pi);
         unit.Y = (float)Math.Sin(ang.X / 180.0f * JMath.Pi);
         unit.Z = (float)Math.Sin(ang.Y / 180.0f * JMath.Pi);
@@ -70,7 +71,7 @@ public class Program : DrawStuffOtk
         world.AddBody(body);
     }
 
-    private RigidBody AddBox(JVector position, JVector velocity, JVector size)
+    private RigidBody AddBox(Vector3 position, Vector3 velocity, Vector3 size)
     {
         BoxShape shape = new(size);
         RigidBody body = new(shape);

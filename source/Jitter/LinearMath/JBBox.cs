@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.LinearMath
@@ -57,12 +59,12 @@ namespace Jitter.LinearMath
         /// <summary>
         /// The maximum point of the box.
         /// </summary>
-        public JVector Min;
+        public Vector3 Min;
 
         /// <summary>
         /// The minimum point of the box.
         /// </summary>
-        public JVector Max;
+        public Vector3 Max;
 
         /// <summary>
         /// Returns the largest box possible.
@@ -76,10 +78,10 @@ namespace Jitter.LinearMath
 
         static JBBox()
         {
-            LargeBox.Min = new JVector(float.MinValue);
-            LargeBox.Max = new JVector(float.MaxValue);
-            SmallBox.Min = new JVector(float.MaxValue);
-            SmallBox.Max = new JVector(float.MinValue);
+            LargeBox.Min = new Vector3(float.MinValue);
+            LargeBox.Max = new Vector3(float.MaxValue);
+            SmallBox.Min = new Vector3(float.MaxValue);
+            SmallBox.Max = new Vector3(float.MinValue);
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace Jitter.LinearMath
         /// </summary>
         /// <param name="min">The minimum point of the box.</param>
         /// <param name="max">The maximum point of the box.</param>
-        public JBBox(JVector min, JVector max)
+        public JBBox(Vector3 min, Vector3 max)
         {
             this.Min = min;
             this.Max = max;
@@ -99,37 +101,37 @@ namespace Jitter.LinearMath
         /// <param name="position"></param>
         /// <param name="orientation"></param>
         /// <param name="result"></param>
-        internal void InverseTransform(ref JVector position, ref JMatrix orientation)
+        internal void InverseTransform(ref Vector3 position, ref JMatrix orientation)
         {
-            JVector.Subtract(ref Max, ref position, out Max);
-            JVector.Subtract(ref Min, ref position, out Min);
+            Vector3.Subtract(ref Max, ref position, out Max);
+            Vector3.Subtract(ref Min, ref position, out Min);
 
-            JVector center;
-            JVector.Add(ref Max, ref Min, out center);
+            Vector3 center;
+            Vector3.Add(ref Max, ref Min, out center);
             center.X *= 0.5f; center.Y *= 0.5f; center.Z *= 0.5f;
 
-            JVector halfExtents;
-            JVector.Subtract(ref Max, ref Min, out halfExtents);
+            Vector3 halfExtents;
+            Vector3.Subtract(ref Max, ref Min, out halfExtents);
             halfExtents.X *= 0.5f; halfExtents.Y *= 0.5f; halfExtents.Z *= 0.5f;
 
-            JVector.TransposedTransform(ref center, ref orientation, out center);
+            Vector3.TransposedTransform(ref center, ref orientation, out center);
 
             JMatrix abs; JMath.Absolute(ref orientation, out abs);
-            JVector.TransposedTransform(ref halfExtents, ref abs, out halfExtents);
+            Vector3.TransposedTransform(ref halfExtents, ref abs, out halfExtents);
 
-            JVector.Add(ref center, ref halfExtents, out Max);
-            JVector.Subtract(ref center, ref halfExtents, out Min);
+            Vector3.Add(ref center, ref halfExtents, out Max);
+            Vector3.Subtract(ref center, ref halfExtents, out Min);
         }
 
         public void Transform(ref JMatrix orientation)
         {
-            JVector halfExtents = 0.5f * (Max - Min);
-            JVector center = 0.5f * (Max + Min);
+            Vector3 halfExtents = 0.5f * (Max - Min);
+            Vector3 center = 0.5f * (Max + Min);
 
-            JVector.Transform(ref center, ref orientation, out center);
+            Vector3.Transform(ref center, ref orientation, out center);
 
             JMatrix abs; JMath.Absolute(ref orientation, out abs);
-            JVector.Transform(ref halfExtents, ref abs, out halfExtents);
+            Vector3.Transform(ref halfExtents, ref abs, out halfExtents);
 
             Max = center + halfExtents;
             Min = center - halfExtents;
@@ -160,7 +162,7 @@ namespace Jitter.LinearMath
         }
 
 
-        public bool SegmentIntersect(ref JVector origin,ref JVector direction)
+        public bool SegmentIntersect(ref Vector3 origin,ref Vector3 direction)
         {
             float enter = 0.0f, exit = 1.0f;
 
@@ -176,7 +178,7 @@ namespace Jitter.LinearMath
             return true;
         }
 
-        public bool RayIntersect(ref JVector origin, ref JVector direction)
+        public bool RayIntersect(ref Vector3 origin, ref Vector3 direction)
         {
             float enter = 0.0f, exit = float.MaxValue;
 
@@ -192,12 +194,12 @@ namespace Jitter.LinearMath
             return true;
         }
 
-        public bool SegmentIntersect(JVector origin, JVector direction)
+        public bool SegmentIntersect(Vector3 origin, Vector3 direction)
         {
             return SegmentIntersect(ref origin, ref direction);
         }
 
-        public bool RayIntersect(JVector origin, JVector direction)
+        public bool RayIntersect(Vector3 origin, Vector3 direction)
         {
             return RayIntersect(ref origin, ref direction);
         }
@@ -207,7 +209,7 @@ namespace Jitter.LinearMath
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public ContainmentType Contains(JVector point)
+        public ContainmentType Contains(Vector3 point)
         {
             return this.Contains(ref point);
         }
@@ -218,7 +220,7 @@ namespace Jitter.LinearMath
         /// </summary>
         /// <param name="point">A point in space.</param>
         /// <returns>The ContainmentType of the point.</returns>
-        public ContainmentType Contains(ref JVector point)
+        public ContainmentType Contains(ref Vector3 point)
         {
             return ((((this.Min.X <= point.X) && (point.X <= this.Max.X)) &&
                 ((this.Min.Y <= point.Y) && (point.Y <= this.Max.Y))) &&
@@ -230,10 +232,10 @@ namespace Jitter.LinearMath
         /// <summary>
         /// Retrieves the 8 corners of the box.
         /// </summary>
-        /// <returns>An array of 8 JVector entries.</returns>
-        #region public void GetCorners(JVector[] corners)
+        /// <returns>An array of 8 Vector3 entries.</returns>
+        #region public void GetCorners(Vector3[] corners)
 
-        public void GetCorners(JVector[] corners)
+        public void GetCorners(Vector3[] corners)
         {
             corners[0].Set(this.Min.X, this.Max.Y, this.Max.Z);
             corners[1].Set(this.Max.X, this.Max.Y, this.Max.Z);
@@ -248,34 +250,34 @@ namespace Jitter.LinearMath
         #endregion
 
 
-        public void AddPoint(JVector point)
+        public void AddPoint(Vector3 point)
         {
             AddPoint(ref point);
         }
 
-        public void AddPoint(ref JVector point)
+        public void AddPoint(ref Vector3 point)
         {
-            JVector.Max(ref this.Max, ref point, out this.Max);
-            JVector.Min(ref this.Min, ref point, out this.Min);
+            this.Max = Vector3.Max(this.Max, point);
+            this.Min = Vector3.Min(this.Min, point);
         }
 
         /// <summary>
         /// Expands a bounding box with the volume 0 by all points
         /// given.
         /// </summary>
-        /// <param name="points">A array of JVector.</param>
+        /// <param name="points">A array of Vector3.</param>
         /// <returns>The resulting bounding box containing all points.</returns>
-        #region public static JBBox CreateFromPoints(JVector[] points)
+        #region public static JBBox CreateFromPoints(Vector3[] points)
 
-        public static JBBox CreateFromPoints(JVector[] points)
+        public static JBBox CreateFromPoints(Vector3[] points)
         {
-            JVector vector3 = new JVector(float.MaxValue);
-            JVector vector2 = new JVector(float.MinValue);
+            Vector3 vector3 = new Vector3(float.MaxValue);
+            Vector3 vector2 = new Vector3(float.MinValue);
 
             for (int i = 0; i < points.Length; i++)
             {
-                JVector.Min(ref vector3, ref points[i], out vector3);
-                JVector.Max(ref vector2, ref points[i], out vector2);
+                vector3 = Vector3.Min(vector3, points[i]);
+                vector2 = Vector3.Max(vector2, points[i]);
             }
             return new JBBox(vector3, vector2);
         }
@@ -337,17 +339,15 @@ namespace Jitter.LinearMath
         /// <param name="result">A JBBox containing the two given boxes.</param>
         public static void CreateMerged(ref JBBox original, ref JBBox additional, out JBBox result)
         {
-            JVector vector;
-            JVector vector2;
-            JVector.Min(ref original.Min, ref additional.Min, out vector2);
-            JVector.Max(ref original.Max, ref additional.Max, out vector);
+            var vector2 = Vector3.Min(original.Min, additional.Min);
+            var vector = Vector3.Max(original.Max, additional.Max);
             result.Min = vector2;
             result.Max = vector;
         }
 
         #endregion
 
-        public JVector Center { get { return (Min + Max)* (1.0f /2.0f); } }
+        public Vector3 Center { get { return (Min + Max)* (1.0f /2.0f); } }
 
         internal float Perimeter
         {

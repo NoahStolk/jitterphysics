@@ -25,7 +25,7 @@ namespace JitterDemo
             basicEffect.VertexColorEnabled = true;
         }
 
-        public void DrawLine(JVector p0, JVector p1, Color color)
+        public void DrawLine(Vector3 p0, Vector3 p1, Color color)
         {
             lineIndex += 2;
 
@@ -43,7 +43,7 @@ namespace JitterDemo
             LineList[lineIndex - 1].Position = Conversion.ToXNAVector(p1);
         }
 
-        public void DrawTriangle(JVector p0, JVector p1, JVector p2, Color color)
+        public void DrawTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Color color)
         {
             triangleIndex += 3;
 
@@ -64,7 +64,7 @@ namespace JitterDemo
             TriangleList[triangleIndex - 3].Position = Conversion.ToXNAVector(p2);
         }
 
-        private void SetElement(ref JVector v, int index, float value)
+        private void SetElement(ref Vector3 v, int index, float value)
         {
             if (index == 0)
                 v.X = value;
@@ -76,7 +76,7 @@ namespace JitterDemo
                 throw new ArgumentOutOfRangeException("index");
         }
 
-        private float GetElement(JVector v, int index)
+        private float GetElement(Vector3 v, int index)
         {
             if (index == 0)
                 return v.X;
@@ -88,29 +88,29 @@ namespace JitterDemo
             throw new ArgumentOutOfRangeException("index");
         }
 
-        public void DrawAabb(JVector from, JVector to, Color color)
+        public void DrawAabb(Vector3 from, Vector3 to, Color color)
         {
-            JVector halfExtents = (to - from) * 0.5f;
-            JVector center = (to + from) * 0.5f;
+            Vector3 halfExtents = (to - from) * 0.5f;
+            Vector3 center = (to + from) * 0.5f;
 
-            JVector edgecoord = new JVector(1f, 1f, 1f), pa, pb;
+            Vector3 edgecoord = new Vector3(1f, 1f, 1f), pa, pb;
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    pa = new JVector(edgecoord.X * halfExtents.X, edgecoord.Y * halfExtents.Y,
+                    pa = new Vector3(edgecoord.X * halfExtents.X, edgecoord.Y * halfExtents.Y,
                         edgecoord.Z * halfExtents.Z);
                     pa += center;
 
                     int othercoord = j % 3;
                     SetElement(ref edgecoord, othercoord, GetElement(edgecoord, othercoord) * -1f);
-                    pb = new JVector(edgecoord.X * halfExtents.X, edgecoord.Y * halfExtents.Y,
+                    pb = new Vector3(edgecoord.X * halfExtents.X, edgecoord.Y * halfExtents.Y,
                         edgecoord.Z * halfExtents.Z);
                     pb += center;
 
                     DrawLine(pa, pb, color);
                 }
-                edgecoord = new JVector(-1f, -1f, -1f);
+                edgecoord = new Vector3(-1f, -1f, -1f);
                 if (i < 3)
                     SetElement(ref edgecoord, i, GetElement(edgecoord, i) * -1f);
             }
@@ -151,19 +151,19 @@ namespace JitterDemo
         }
 
 
-        public void DrawLine(JVector start, JVector end)
+        public void DrawLine(Vector3 start, Vector3 end)
         {
             DrawLine(start, end, Color.Black);
         }
 
-        public void DrawPoint(JVector pos)
+        public void DrawPoint(Vector3 pos)
         {
            // DrawPoint(pos, Color.Red);
         }
 
         public Color Color { get; set; }
 
-        public void DrawTriangle(JVector pos1, JVector pos2, JVector pos3)
+        public void DrawTriangle(Vector3 pos1, Vector3 pos2, Vector3 pos3)
         {
             DrawTriangle(pos1, pos2, pos3, Color);
         }

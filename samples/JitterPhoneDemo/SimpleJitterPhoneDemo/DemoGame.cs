@@ -60,7 +60,7 @@ namespace SimpleJitterPhoneDemo
         {
             // Create the shapes
             BoxShape groundShape = new BoxShape(9, 1, 9);
-            BoxShape boxShape = new BoxShape(JVector.One);
+            BoxShape boxShape = new BoxShape(Vector3.One);
 
             // Create rigid bodies from them
             RigidBody groundBody = new RigidBody(groundShape);
@@ -70,7 +70,7 @@ namespace SimpleJitterPhoneDemo
             for (int i = 0; i < 17; i++)
             {
                 RigidBody boxBody = new RigidBody(boxShape);         // create a new box
-                boxBody.Position = new JVector(0, 0.5f + i * 2.2f, i*0.1f);  // move it
+                boxBody.Position = new Vector3(0, 0.5f + i * 2.2f, i*0.1f);  // move it
                 world.AddBody(boxBody);                              // and add it
             }
            

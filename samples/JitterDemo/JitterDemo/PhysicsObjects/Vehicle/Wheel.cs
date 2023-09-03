@@ -124,7 +124,7 @@ namespace JitterDemo
         /// <summary>
         /// The position of the wheel in body space.
         /// </summary>
-        public JVector Position { get; set; }
+        public Vector3 Position { get; set; }
 
         /// <summary>
         /// Creates a new instance of the Wheel class.
@@ -133,7 +133,7 @@ namespace JitterDemo
         /// <param name="car">The RigidBody on which to apply the wheel forces.</param>
         /// <param name="position">The position of the wheel on the body (in body space).</param>
         /// <param name="radius">The wheel radius.</param>
-        public Wheel(World world,RigidBody car,JVector position,float radius)
+        public Wheel(World world,RigidBody car,Vector3 position,float radius)
         {
             this.world = world;
             this.car = car;
@@ -155,10 +155,10 @@ namespace JitterDemo
         /// Gets the position of the wheel in world space.
         /// </summary>
         /// <returns>The position of the wheel in world space.</returns>
-        public JVector GetWorldPosition()
+        public Vector3 GetWorldPosition()
         {
             return car.Position +
-                JVector.Transform(Position + JVector.Up * displacement, car.Orientation);
+                Vector3.Transform(Position + Vector3.Up * displacement, car.Orientation);
         }
 
         /// <summary>
@@ -212,22 +212,22 @@ namespace JitterDemo
             SideFriction = 2.5f - JMath.Clamp(vel / 20.0f, 0.0f, 1.4f);
             ForwardFriction = 5.5f - JMath.Clamp(vel / 20.0f, 0.0f, 5.4f);
 
-            JVector force = JVector.Zero;
+            Vector3 force = Vector3.Zero;
 
-            JVector worldAxis = JVector.Transform(JVector.Up, car.Orientation);
-            JVector worldPos = car.Position + JVector.Transform(Position, car.Orientation);
+            Vector3 worldAxis = Vector3.Transform(Vector3.Up, car.Orientation);
+            Vector3 worldPos = car.Position + Vector3.Transform(Position, car.Orientation);
 
-            JVector forward = new JVector(-car.Orientation.M31, -car.Orientation.M32, -car.Orientation.M33);
+            Vector3 forward = new Vector3(-car.Orientation.M31, -car.Orientation.M32, -car.Orientation.M33);
 
-            JVector wheelFwd = JVector.Transform(forward, JMatrix.CreateFromAxisAngle(JVector.Up, SteerAngle / 360 * 2 * JMath.Pi));
-            JVector wheelLeft = JVector.Cross(JVector.Up, wheelFwd); wheelLeft.Normalize();
-            JVector wheelUp = JVector.Cross(wheelFwd, wheelLeft);
+            Vector3 wheelFwd = Vector3.Transform(forward, JMatrix.CreateFromAxisAngle(Vector3.Up, SteerAngle / 360 * 2 * JMath.Pi));
+            Vector3 wheelLeft = Vector3.Cross(Vector3.Up, wheelFwd); wheelLeft.Normalize();
+            Vector3 wheelUp = Vector3.Cross(wheelFwd, wheelLeft);
 
             float rayLen = 2.0f * Radius + WheelTravel;
             
-            JVector wheelRayStart = worldPos;
-            JVector wheelDelta = -Radius * worldAxis;
-            JVector wheelRayEnd = worldPos + wheelDelta;
+            Vector3 wheelRayStart = worldPos;
+            Vector3 wheelDelta = -Radius * worldAxis;
+            Vector3 wheelRayEnd = worldPos + wheelDelta;
 
             float deltaFwd = (2.0f * Radius) / (NumberOfRays + 1);
             float deltaFwdStart = deltaFwd;
@@ -237,10 +237,10 @@ namespace JitterDemo
 
             lastOnFloor = false;
 
-            JVector rayOrigin = car.Position + JVector.Transform(Position, car.Orientation);
+            Vector3 rayOrigin = car.Position + Vector3.Transform(Position, car.Orientation);
 
-            JVector groundNormal = JVector.Zero;
-            JVector groundPos = JVector.Zero;
+            Vector3 groundNormal = Vector3.Zero;
+            Vector3 groundPos = Vector3.Zero;
             float deepestFrac = float.MaxValue;
             RigidBody worldBody = null;
 
@@ -249,9 +249,9 @@ namespace JitterDemo
                 float distFwd = (deltaFwdStart + i * deltaFwd) - Radius;
                 float zOffset = Radius * (1.0f - (float)Math.Cos(Math.PI / 4 * (distFwd / Radius)));
 
-                JVector newOrigin = wheelRayStart + distFwd * wheelFwd + zOffset * wheelUp;
+                Vector3 newOrigin = wheelRayStart + distFwd * wheelFwd + zOffset * wheelUp;
 
-                RigidBody body; JVector normal; float frac;
+                RigidBody body; Vector3 normal; float frac;
                 bool result = world.CollisionSystem.Raycast(newOrigin, wheelDelta,
                     raycast, out body, out normal, out frac);
 
@@ -284,7 +284,7 @@ namespace JitterDemo
             float displacementForceMag = displacement * Spring;
 
             // reduce force when suspension is par to ground
-            displacementForceMag *= Math.Abs(JVector.Dot(groundNormal, worldAxis));
+            displacementForceMag *= Math.Abs(Vector3.Dot(groundNormal, worldAxis));
 
             // apply damping
             float dampingForceMag = upSpeed * Damping;
@@ -293,25 +293,25 @@ namespace JitterDemo
 
             if (totalForceMag < 0.0f) totalForceMag = 0.0f;
 
-            JVector extraForce = totalForceMag * worldAxis;
+            Vector3 extraForce = totalForceMag * worldAxis;
 
             force += extraForce;
 
-            JVector groundUp = groundNormal;
-            JVector groundLeft = JVector.Cross(groundNormal, wheelFwd);
+            Vector3 groundUp = groundNormal;
+            Vector3 groundLeft = Vector3.Cross(groundNormal, wheelFwd);
             if (groundLeft.LengthSquared() > 0.0f) groundLeft.Normalize();
 
-            JVector groundFwd = JVector.Cross(groundLeft, groundUp);
+            Vector3 groundFwd = Vector3.Cross(groundLeft, groundUp);
 
-            JVector wheelPointVel = car.LinearVelocity +
-                    JVector.Cross(car.AngularVelocity, JVector.Transform(Position, car.Orientation));
+            Vector3 wheelPointVel = car.LinearVelocity +
+                    Vector3.Cross(car.AngularVelocity, Vector3.Transform(Position, car.Orientation));
 
             // rimVel=(wxr)*v
-            JVector rimVel = angVel * JVector.Cross(wheelLeft, groundPos - worldPos);
+            Vector3 rimVel = angVel * Vector3.Cross(wheelLeft, groundPos - worldPos);
             wheelPointVel += rimVel;
 
-            JVector worldVel = worldBody.LinearVelocity +
-             JVector.Cross(worldBody.AngularVelocity, groundPos - worldBody.Position);
+            Vector3 worldVel = worldBody.LinearVelocity +
+             Vector3.Cross(worldBody.AngularVelocity, groundPos - worldBody.Position);
 
             wheelPointVel -= worldVel;
 
@@ -323,7 +323,7 @@ namespace JitterDemo
             float smallVel = 3;
             float friction = SideFriction;
 
-            float sideVel = JVector.Dot(wheelPointVel, groundLeft);
+            float sideVel = Vector3.Dot(wheelPointVel, groundLeft);
 
             if ((sideVel > slipVel) || (sideVel < -slipVel))
                 friction *= slipFactor;
@@ -344,7 +344,7 @@ namespace JitterDemo
 
             // fwd/back forces
             friction = ForwardFriction;
-            float fwdVel = JVector.Dot(wheelPointVel, groundFwd);
+            float fwdVel = Vector3.Dot(wheelPointVel, groundFwd);
 
             if ((fwdVel > slipVel) || (fwdVel < -slipVel))
                 friction *= slipFactor;
@@ -364,14 +364,14 @@ namespace JitterDemo
             force += extraForce;
 
             // fwd force also spins the wheel
-            JVector wheelCentreVel = car.LinearVelocity +
-             JVector.Cross(car.AngularVelocity, JVector.Transform(Position, car.Orientation));
+            Vector3 wheelCentreVel = car.LinearVelocity +
+             Vector3.Cross(car.AngularVelocity, Vector3.Transform(Position, car.Orientation));
 
-            angVelForGrip = JVector.Dot(wheelCentreVel, groundFwd) / Radius;
+            angVelForGrip = Vector3.Dot(wheelCentreVel, groundFwd) / Radius;
             torque += -fwdForce * Radius;
 
             // add force to car
-            car.AddForce(force, groundPos + 0.5f * JVector.Up);
+            car.AddForce(force, groundPos + 0.5f * Vector3.Up);
 
             // add force to the world
             if (!worldBody.IsStatic)
@@ -381,7 +381,7 @@ namespace JitterDemo
 
         }
 
-        private bool RaycastCallback(RigidBody body, JVector normal, float frac)
+        private bool RaycastCallback(RigidBody body, Vector3 normal, float frac)
         {
             return (body != car);
         }

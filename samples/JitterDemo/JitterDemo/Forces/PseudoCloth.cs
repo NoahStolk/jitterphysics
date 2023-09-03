@@ -36,7 +36,7 @@ namespace Jitter.Forces
                 for (int e = 0; e < sizeX; e++)
                 {
                     bodies[i + e * sizeY] = new PseudoClothBody(0.1f);
-                    bodies[i + e * sizeY].Position = new JVector(i * scale, 0, e * scale) + JVector.Up * 10.0f;
+                    bodies[i + e * sizeY].Position = new Vector3(i * scale, 0, e * scale) + Vector3.Up * 10.0f;
                     bodies[i + e * sizeY].StaticFriction =0.5f;
                     bodies[i + e * sizeY].DynamicFriction = 0.5f;
                     bodies[i + e * sizeY].Mass = 0.1f;

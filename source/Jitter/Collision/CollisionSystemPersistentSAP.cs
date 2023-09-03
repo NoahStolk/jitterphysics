@@ -25,6 +25,8 @@ using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
 using System.Collections;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Collision
@@ -344,7 +346,7 @@ namespace Jitter.Collision
         // is unsolved - so it starts from outside the broadphase.
 
         #region Depricated
-        //public void QueryRay(HashSet<IBroadphaseEntity> entities,JVector rayOrigin, JVector rayDirection)
+        //public void QueryRay(HashSet<IBroadphaseEntity> entities,Vector3 rayOrigin, Vector3 rayDirection)
         //{
         //    rayDirection.Normalize();
 
@@ -440,12 +442,12 @@ namespace Jitter.Collision
         /// against rays (rays are of infinite length). They are checked against segments
         /// which start at rayOrigin and end in rayOrigin + rayDirection.
         /// </summary>
-        #region public override bool Raycast(JVector rayOrigin, JVector rayDirection, out JVector normal,out float fraction)
-        public override bool Raycast(JVector rayOrigin, JVector rayDirection, RaycastCallback raycast, out RigidBody body, out JVector normal, out float fraction)
+        #region public override bool Raycast(Vector3 rayOrigin, Vector3 rayDirection, out Vector3 normal,out float fraction)
+        public override bool Raycast(Vector3 rayOrigin, Vector3 rayDirection, RaycastCallback raycast, out RigidBody body, out Vector3 normal, out float fraction)
         {
-            body = null; normal = JVector.Zero; fraction = float.MaxValue;
+            body = null; normal = Vector3.Zero; fraction = float.MaxValue;
 
-            JVector tempNormal;float tempFraction;
+            Vector3 tempNormal;float tempFraction;
             bool result = false;
 
             // TODO: This can be done better in CollisionSystemPersistenSAP
@@ -495,10 +497,10 @@ namespace Jitter.Collision
         /// against rays (rays are of infinite length). They are checked against segments
         /// which start at rayOrigin and end in rayOrigin + rayDirection.
         /// </summary>
-        #region public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out float fraction)
-        public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out float fraction)
+        #region public override bool Raycast(RigidBody body, Vector3 rayOrigin, Vector3 rayDirection, out Vector3 normal, out float fraction)
+        public override bool Raycast(RigidBody body, Vector3 rayOrigin, Vector3 rayDirection, out Vector3 normal, out float fraction)
         {
-            fraction = float.MaxValue; normal = JVector.Zero;
+            fraction = float.MaxValue; normal = Vector3.Zero;
 
             if (!body.BoundingBox.RayIntersect(ref rayOrigin, ref rayDirection)) return false;
 
@@ -506,12 +508,12 @@ namespace Jitter.Collision
             {
                 Multishape ms = (body.Shape as Multishape).RequestWorkingClone();
                 
-                JVector tempNormal;float tempFraction;
+                Vector3 tempNormal;float tempFraction;
                 bool multiShapeCollides = false;
 
-                JVector transformedOrigin; JVector.Subtract(ref rayOrigin, ref body.position, out transformedOrigin);
-                JVector.Transform(ref transformedOrigin, ref body.invOrientation, out transformedOrigin);
-                JVector transformedDirection; JVector.Transform(ref rayDirection, ref body.invOrientation, out transformedDirection);
+                Vector3 transformedOrigin; Vector3.Subtract(ref rayOrigin, ref body.position, out transformedOrigin);
+                Vector3.Transform(ref transformedOrigin, ref body.invOrientation, out transformedOrigin);
+                Vector3 transformedDirection; Vector3.Transform(ref rayDirection, ref body.invOrientation, out transformedDirection);
 
                 int msLength = ms.Prepare(ref transformedOrigin, ref transformedDirection);
 
@@ -527,13 +529,13 @@ namespace Jitter.Collision
                             if (useTerrainNormal && ms is TerrainShape)
                             {
                                 (ms as TerrainShape).CollisionNormal(out tempNormal);
-                                JVector.Transform(ref tempNormal, ref body.orientation, out tempNormal);
+                                Vector3.Transform(ref tempNormal, ref body.orientation, out tempNormal);
                                 tempNormal.Negate();
                             }
                             else if (useTriangleMeshNormal && ms is TriangleMeshShape)
                             {
                                 (ms as TriangleMeshShape).CollisionNormal(out tempNormal);
-                                JVector.Transform(ref tempNormal, ref body.orientation, out tempNormal);
+                                Vector3.Transform(ref tempNormal, ref body.orientation, out tempNormal);
                                 tempNormal.Negate();
                             }
 

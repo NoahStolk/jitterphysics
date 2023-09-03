@@ -27,21 +27,21 @@ namespace JitterDemo.Scenes
 
             for (int i = 0; i < 12; i++)
             {
-                RigidBody body = new RigidBody(new BoxShape(JVector.One));
-                body.Position = new JVector(i * 1.5f-20, 0.5f, 0);
+                RigidBody body = new RigidBody(new BoxShape(Vector3.One));
+                body.Position = new Vector3(i * 1.5f-20, 0.5f, 0);
 
-                JVector jpos2 = body.Position;
+                Vector3 jpos2 = body.Position;
 
                 Demo.World.AddBody(body);
                 body.Update();
 
                 if (last != null)
                 {
-                    JVector jpos3 = last.Position;
+                    Vector3 jpos3 = last.Position;
 
-                    JVector dif; JVector.Subtract(ref jpos2, ref jpos3, out dif);
-                    JVector.Multiply(ref dif, 0.5f, out dif);
-                    JVector.Subtract(ref jpos2, ref dif, out dif);
+                    Vector3 dif; Vector3.Subtract(ref jpos2, ref jpos3, out dif);
+                    Vector3.Multiply(ref dif, 0.5f, out dif);
+                    Vector3.Subtract(ref jpos2, ref dif, out dif);
 
                     Constraint cons = new PointOnPoint(last, body, dif);
                     Demo.World.AddConstraint(cons);

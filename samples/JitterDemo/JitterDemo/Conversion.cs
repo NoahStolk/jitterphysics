@@ -8,9 +8,9 @@ namespace JitterDemo
 {
     public sealed class Conversion
     {
-        public static JVector ToJitterVector(Vector3 vector)
+        public static Vector3 ToJitterVector(Vector3 vector)
         {
-            return new JVector(vector.X, vector.Y, vector.Z);
+            return new Vector3(vector.X, vector.Y, vector.Z);
         }
 
         public static Matrix ToXNAMatrix(JMatrix matrix)
@@ -46,7 +46,7 @@ namespace JitterDemo
         }
 
 
-        public static Vector3 ToXNAVector(JVector vector)
+        public static Vector3 ToXNAVector(Vector3 vector)
         {
             return new Vector3(vector.X, vector.Y, vector.Z);
         }

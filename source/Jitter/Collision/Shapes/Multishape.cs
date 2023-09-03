@@ -25,6 +25,8 @@ using System.Diagnostics;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -59,7 +61,7 @@ namespace Jitter.Collision.Shapes
         /// <param name="rayOrigin"></param>
         /// <param name="rayDelta"></param>
         /// <returns></returns>
-        public abstract int Prepare(ref JVector rayOrigin, ref JVector rayDelta);
+        public abstract int Prepare(ref Vector3 rayOrigin, ref Vector3 rayDelta);
 
         protected abstract Multishape CreateWorkingClone();
 
@@ -123,7 +125,7 @@ namespace Jitter.Collision.Shapes
             }
         }
 
-        public override void MakeHull(ref List<JVector> triangleList, int generationThreshold)
+        public override void MakeHull(ref List<Vector3> triangleList, int generationThreshold)
         {
             //throw new NotImplementedException();
         }
@@ -134,12 +136,12 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         public override void CalculateMassInertia()
         {
-            geomCen = JVector.Zero;
+            geomCen = Vector3.Zero;
 
             // TODO: calc this right
             inertia = JMatrix.Identity;
 
-            JVector size; JVector.Subtract(ref boundingBox.Max, ref boundingBox.Min, out size);
+            Vector3 size; Vector3.Subtract(ref boundingBox.Max, ref boundingBox.Min, out size);
 
             mass = size.X * size.Y * size.Z;
 

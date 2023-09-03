@@ -17,19 +17,19 @@ namespace JitterDemo
                 //Jitter.DynamicTree dt = new Jitter.DynamicTree();
 
                 //JBBox jb;
-                //jb.Min = JVector.Zero;
-                //jb.Max = JVector.One;
+                //jb.Min = Vector3.Zero;
+                //jb.Max = Vector3.One;
 
                 //JBBox jb2;
-                //jb2.Min = JVector.Zero;
-                //jb.Max = JVector.One * 2.0f;
+                //jb2.Min = Vector3.Zero;
+                //jb.Max = Vector3.One * 2.0f;
 
                 //dt.CreateProxy(ref jb, 1);
                 //dt.CreateProxy(ref jb, 2);
 
                 //JBBox testBox;
-                //testBox.Min = JVector.Zero;
-                //testBox.Max = JVector.One *20.0f;
+                //testBox.Min = Vector3.Zero;
+                //testBox.Max = Vector3.One *20.0f;
 
                 //dt.Query(bla, ref testBox);
                 //dt.MoveProxy

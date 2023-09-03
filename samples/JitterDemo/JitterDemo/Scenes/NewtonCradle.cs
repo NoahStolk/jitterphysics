@@ -24,7 +24,7 @@ namespace JitterDemo.Scenes
             AddGround();
 
             RigidBody boxb = new RigidBody(new BoxShape(7,1,2));
-            boxb.Position = new JVector(3.0f,12,0);
+            boxb.Position = new Vector3(3.0f,12,0);
             this.Demo.World.AddBody(boxb);
             boxb.Tag = BodyTag.DontDrawMe;
 
@@ -38,12 +38,12 @@ namespace JitterDemo.Scenes
             for (int i = 0; i < 7; i++)
             {
                 RigidBody body = new RigidBody(shape);
-                body.Position = new JVector(i, 6, 0);
+                body.Position = new Vector3(i, 6, 0);
 
-                DistanceConstraint dc1 = new DistanceConstraint(boxb, body, body.Position + JVector.Up * 6 + JVector.Backward * 5 + JVector.Down * 0.5f, body.Position);
+                DistanceConstraint dc1 = new DistanceConstraint(boxb, body, body.Position + Vector3.Up * 6 + Vector3.Backward * 5 + Vector3.Down * 0.5f, body.Position);
                 dc1.Softness = 1.0f;
 
-                DistanceConstraint dc2 = new DistanceConstraint(boxb, body, body.Position + JVector.Up * 6 + JVector.Forward * 5 + JVector.Down * 0.5f, body.Position);
+                DistanceConstraint dc2 = new DistanceConstraint(boxb, body, body.Position + Vector3.Up * 6 + Vector3.Forward * 5 + Vector3.Down * 0.5f, body.Position);
                 dc2.Softness = 1.0f;
 
                 dc1.BiasFactor = dc2.BiasFactor = 0.8f;
@@ -63,7 +63,7 @@ namespace JitterDemo.Scenes
             //for (int i = 0; i < 5; i++)
             //{
             //    RigidBody sBody = new RigidBody(new SphereShape(0.5f));
-            //    sBody.Position = new JVector(0, 0.5f, i);
+            //    sBody.Position = new Vector3(0, 0.5f, i);
             //    this.Demo.World.AddBody(sBody);
             //    sBody.Restitution = 1.0f;
             //    sBody.Friction = 0.0f;
@@ -72,9 +72,9 @@ namespace JitterDemo.Scenes
             //for (int i = 0; i < 3; i++)
             //{
             //    RigidBody sBody = new RigidBody(new SphereShape(0.5f));
-            //    sBody.Position = new JVector(0, 0.5f, 10 + i);
+            //    sBody.Position = new Vector3(0, 0.5f, 10 + i);
             //    this.Demo.World.AddBody(sBody);
-            //    sBody.LinearVelocity = JVector.Forward * 3;
+            //    sBody.LinearVelocity = Vector3.Forward * 3;
             //    sBody.Restitution = 1.0f;
             //    sBody.Friction = 0.0f;
             //}

@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Dynamics.Constraints.SingleBody
@@ -33,11 +35,11 @@ namespace Jitter.Dynamics.Constraints.SingleBody
     /// </summary>
     public class PointOnLine : Constraint
     {
-        private JVector localAnchor1;
-        private JVector r1;
+        private Vector3 localAnchor1;
+        private Vector3 r1;
 
-        private JVector lineNormal = JVector.Right;
-        private JVector anchor;
+        private Vector3 lineNormal = Vector3.Right;
+        private Vector3 anchor;
 
         private float biasFactor = 0.5f;
         private float softness = 0.0f;
@@ -49,14 +51,14 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <param name="localAnchor">The anchor point on the body in local (body)
         /// coordinates.</param>
         /// <param name="lineDirection">The axis defining the line in world space.</param>/param>
-        public PointOnLine(RigidBody body, JVector localAnchor, JVector lineDirection)
+        public PointOnLine(RigidBody body, Vector3 localAnchor, Vector3 lineDirection)
             : base(body, null)
         {
             if (lineDirection.LengthSquared() == 0.0f)
                 throw new ArgumentException("Line direction can't be zero", "lineDirection");
 
             localAnchor1 = localAnchor;
-            this.anchor = body.position + JVector.Transform(localAnchor, body.orientation);
+            this.anchor = body.position + Vector3.Transform(localAnchor, body.orientation);
 
             this.lineNormal = lineDirection;
             this.lineNormal.Normalize();
@@ -65,12 +67,12 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <summary>
         /// The anchor point of the body in world space.
         /// </summary>
-        public JVector Anchor { get { return anchor; } set { anchor = value; } }
+        public Vector3 Anchor { get { return anchor; } set { anchor = value; } }
 
         /// <summary>
         /// The axis defining the line of the constraint.
         /// </summary>
-        public JVector Axis { get { return lineNormal; } set { lineNormal = value; lineNormal.Normalize(); } }
+        public Vector3 Axis { get { return lineNormal; } set { lineNormal = value; lineNormal.Normalize(); } }
 
         /// <summary>
         /// Defines how big the applied impulses can get.
@@ -87,7 +89,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         float bias;
         float softnessOverDt;
 
-        JVector[] jacobian = new JVector[2];
+        Vector3[] jacobian = new Vector3[2];
 
         /// <summary>
         /// Called once before iteration starts.
@@ -95,16 +97,16 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <param name="timestep">The simulation timestep</param>
         public override void PrepareForIteration(float timestep)
         {
-            JVector.Transform(ref localAnchor1, ref body1.orientation, out r1);
+            Vector3.Transform(ref localAnchor1, ref body1.orientation, out r1);
 
-            JVector p1, dp;
-            JVector.Add(ref body1.position, ref r1, out p1);
+            Vector3 p1, dp;
+            Vector3.Add(ref body1.position, ref r1, out p1);
 
-            JVector.Subtract(ref p1, ref anchor, out dp);
+            Vector3.Subtract(ref p1, ref anchor, out dp);
 
-            JVector l = lineNormal;
+            Vector3 l = lineNormal;
 
-            JVector t = (p1 - anchor) % l;
+            Vector3 t = (p1 - anchor) % l;
             if (t.LengthSquared() != 0.0f) t.Normalize();
             t = t % l;
 
@@ -112,7 +114,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             jacobian[1] = r1 % t;
 
             effectiveMass = body1.inverseMass
-                + JVector.Transform(jacobian[1], body1.invInertiaWorld) * jacobian[1];
+                + Vector3.Transform(jacobian[1], body1.invInertiaWorld) * jacobian[1];
 
             softnessOverDt = softness / timestep;
             effectiveMass += softnessOverDt;
@@ -124,7 +126,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * accumulatedImpulse * jacobian[0];
-                body1.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
+                body1.angularVelocity += Vector3.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
             }
 
         }
@@ -147,7 +149,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * lambda * jacobian[0];
-                body1.angularVelocity += JVector.Transform(lambda * jacobian[1], body1.invInertiaWorld);
+                body1.angularVelocity += Vector3.Transform(lambda * jacobian[1], body1.invInertiaWorld);
             }
         }
 

@@ -58,7 +58,7 @@ namespace JitterSample
             // Create the solid ground
             var groundShape = new BoxShape(9, 1, 9);
             var groundBody = new RigidBody(groundShape);
-            groundBody.Position = new JVector(0, -5, 0);
+            groundBody.Position = new Vector3(0, -5, 0);
             groundBody.IsStatic = true;
             world.AddBody(groundBody);
 
@@ -71,9 +71,9 @@ namespace JitterSample
 
         private void CreateCube(int height)
         {
-            var boxShape = new BoxShape(JVector.One);
+            var boxShape = new BoxShape(Vector3.One);
             var boxBody = new RigidBody(boxShape);
-            boxBody.Position = new JVector(0, 0.5f + height * 2.2f, height * 0.1f);
+            boxBody.Position = new Vector3(0, 0.5f + height * 2.2f, height * 0.1f);
             world.AddBody(boxBody);
         }
 

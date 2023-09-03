@@ -30,7 +30,7 @@ namespace JitterDemo.Scenes
 
             PseudoCloth pc = new PseudoCloth(Demo.World, 20,20, 0.5f);
 
-            BoxShape boxShape = new BoxShape(JVector.One);
+            BoxShape boxShape = new BoxShape(Vector3.One);
 
             RigidBody[] boxes = new RigidBody[4];
 
@@ -39,7 +39,7 @@ namespace JitterDemo.Scenes
             for(int i=0;i<4;i++)
             {
                 boxes[i] = new RigidBody(boxShape);
-                boxes[i].Position = new JVector(i % 2 == 0 ? 10.0f : -0.5f, 10.5f, (i < 2) ? 10.0f : -0.5f);
+                boxes[i].Position = new Vector3(i % 2 == 0 ? 10.0f : -0.5f, 10.5f, (i < 2) ? 10.0f : -0.5f);
                // Demo.World.AddBody(boxes[i]);
 
 
@@ -71,12 +71,12 @@ namespace JitterDemo.Scenes
             RigidBody sphereBody = new RigidBody(new SphereShape(2.0f));
             Demo.World.AddBody(sphereBody);
             sphereBody.Mass = 10.0f;
-            sphereBody.Position = new JVector(5, 20, 5);
+            sphereBody.Position = new Vector3(5, 20, 5);
 
             //ConvexHullObject2 obj2 = new ConvexHullObject2(this.Demo);
             //Demo.Components.Add(obj2);
 
-            //obj2.body.Position = new JVector(5, 30, 5);
+            //obj2.body.Position = new Vector3(5, 30, 5);
             //Demo.World.AddBody(obj2.body);
 
         }

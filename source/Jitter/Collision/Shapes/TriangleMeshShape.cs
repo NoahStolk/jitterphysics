@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using System.Numerics;
+
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -98,7 +100,7 @@ namespace Jitter.Collision.Shapes
             return potentialTriangles.Count;
         }
 
-        public override void MakeHull(ref List<JVector> triangleList, int generationThreshold)
+        public override void MakeHull(ref List<Vector3> triangleList, int generationThreshold)
         {
             JBBox large = JBBox.LargeBox;
 
@@ -120,13 +122,13 @@ namespace Jitter.Collision.Shapes
         /// <param name="rayOrigin"></param>
         /// <param name="rayDelta"></param>
         /// <returns></returns>
-        public override int Prepare(ref JVector rayOrigin, ref JVector rayDelta)
+        public override int Prepare(ref Vector3 rayOrigin, ref Vector3 rayDelta)
         {
             potentialTriangles.Clear();
 
             #region Expand Spherical
-            JVector expDelta;
-            JVector.Normalize(ref rayDelta, out expDelta);
+            Vector3 expDelta;
+            Vector3.Normalize(ref rayDelta, out expDelta);
             expDelta = rayDelta + expDelta * sphericalExpansion;
             #endregion
 
@@ -135,7 +137,7 @@ namespace Jitter.Collision.Shapes
             return potentialTriangles.Count;
         }
 
-        JVector[] vecs = new JVector[3];
+        Vector3[] vecs = new Vector3[3];
 
         /// <summary>
         /// SupportMapping. Finds the point in the shape furthest away from the given direction.
@@ -144,21 +146,21 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <param name="result">The result.</param>
-        public override void SupportMapping(ref JVector direction, out JVector result)
+        public override void SupportMapping(ref Vector3 direction, out Vector3 result)
         {
-            JVector exp;
-            JVector.Normalize(ref direction, out exp);
+            Vector3 exp;
+            Vector3.Normalize(ref direction, out exp);
             exp *= sphericalExpansion;
 
-            float min = JVector.Dot(ref vecs[0], ref direction);
+            float min = Vector3.Dot(ref vecs[0], ref direction);
             int minIndex = 0;
-            float dot = JVector.Dot(ref vecs[1], ref direction);
+            float dot = Vector3.Dot(ref vecs[1], ref direction);
             if (dot > min)
             {
                 min = dot;
                 minIndex = 1;
             }
-            dot = JVector.Dot(ref vecs[2], ref direction);
+            dot = Vector3.Dot(ref vecs[2], ref direction);
             if (dot > min)
             {
                 min = dot;
@@ -204,24 +206,24 @@ namespace Jitter.Collision.Shapes
             vecs[1] = octree.GetVertex(octree.tris[potentialTriangles[index]].I1);
             vecs[2] = octree.GetVertex(octree.tris[potentialTriangles[index]].I2);
 
-            JVector sum = vecs[0];
-            JVector.Add(ref sum, ref vecs[1], out sum);
-            JVector.Add(ref sum, ref vecs[2], out sum);
-            JVector.Multiply(ref sum, 1.0f / 3.0f, out sum);
+            Vector3 sum = vecs[0];
+            Vector3.Add(ref sum, ref vecs[1], out sum);
+            Vector3.Add(ref sum, ref vecs[2], out sum);
+            Vector3.Multiply(ref sum, 1.0f / 3.0f, out sum);
 
       
             geomCen = sum;
 
-            JVector.Subtract(ref vecs[1], ref vecs[0], out sum);
-            JVector.Subtract(ref vecs[2], ref vecs[0], out normal);
-            JVector.Cross(ref sum, ref normal, out normal);
+            Vector3.Subtract(ref vecs[1], ref vecs[0], out sum);
+            Vector3.Subtract(ref vecs[2], ref vecs[0], out normal);
+            Vector3.Cross(ref sum, ref normal, out normal);
 
             if (flipNormal) normal.Negate();
         }
 
-        private JVector normal = JVector.Up;
+        private Vector3 normal = Vector3.Up;
 
-        public void CollisionNormal(out JVector normal)
+        public void CollisionNormal(out Vector3 normal)
         {
             normal = this.normal;
         }

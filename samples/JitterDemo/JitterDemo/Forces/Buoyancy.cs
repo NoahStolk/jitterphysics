@@ -22,9 +22,9 @@ namespace Jitter.Forces
         /// </summary>
         /// <param name="point">The point.</param>
         /// <returns>True if the given point is within the area.</returns>
-        public delegate bool DefineFluidArea(ref JVector point);
+        public delegate bool DefineFluidArea(ref Vector3 point);
 
-        private Dictionary<Shape, JVector[]> samples = new Dictionary<Shape, JVector[]>();
+        private Dictionary<Shape, Vector3[]> samples = new Dictionary<Shape, Vector3[]>();
         private List<RigidBody> bodies = new List<RigidBody>();
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Jitter.Forces
         /// <summary>
         /// Flow direction and magnitude.
         /// </summary>
-        public JVector Flow { get; set; }
+        public Vector3 Flow { get; set; }
 
         private DefineFluidArea fluidArea = null;
 
@@ -59,7 +59,7 @@ namespace Jitter.Forces
         {
             Density = 2.0f;
             Damping = 0.1f;
-            Flow = JVector.Zero;
+            Flow = Vector3.Zero;
         }
 
         /// <summary>
@@ -110,10 +110,10 @@ namespace Jitter.Forces
         /// the results. Note that the total number of subdivisions is subdivisions³.</param>
         public void Add(RigidBody body, int subdivisions)
         {
-            List<JVector> massPoints = new List<JVector>();
-            JVector testVector;
+            List<Vector3> massPoints = new List<Vector3>();
+            Vector3 testVector;
 
-            JVector diff = body.Shape.BoundingBox.Max - body.Shape.BoundingBox.Min;
+            Vector3 diff = body.Shape.BoundingBox.Max - body.Shape.BoundingBox.Min;
 
             if (diff.IsNearlyZero())
                 throw new InvalidOperationException("BoundingBox volume of the shape is zero.");
@@ -138,7 +138,7 @@ namespace Jitter.Forces
                         testVector.Z = body.Shape.BoundingBox.Min.Z + (diff.Z / (float)(subdivisions - 1)) * ((float)k);
 
                         JMatrix ident = JMatrix.Identity;
-                        JVector zero = JVector.Zero;
+                        Vector3 zero = Vector3.Zero;
 
                         if (ms != null)
                         {
@@ -184,15 +184,15 @@ namespace Jitter.Forces
 
                 if (FluidBox.Contains(body.BoundingBox) != JBBox.ContainmentType.Disjoint)
                 {
-                    JVector[] positions = samples[body.Shape];
+                    Vector3[] positions = samples[body.Shape];
 
                     float frac = 0.0f;
 
-                    JVector currentCoord = JVector.Zero;
+                    Vector3 currentCoord = Vector3.Zero;
                     for (int i = 0; i < positions.Length; i++)
                     {
-                        currentCoord = JVector.Transform(positions[i], body.Orientation);
-                        currentCoord = JVector.Add(currentCoord, body.Position);
+                        currentCoord = Vector3.Transform(positions[i], body.Orientation);
+                        currentCoord = Vector3.Add(currentCoord, body.Position);
 
                         bool containsCoord = false;
 

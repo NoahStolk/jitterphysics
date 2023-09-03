@@ -25,7 +25,7 @@ namespace JitterDemo
 
         }
 
-        public static void ExtractData(List<JVector> vertices, List<TriangleVertexIndices> indices, Model model)
+        public static void ExtractData(List<Vector3> vertices, List<TriangleVertexIndices> indices, Model model)
         {
             Matrix[] bones_ = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(bones_);
@@ -60,9 +60,9 @@ namespace JitterDemo
                         throw new Exception("Model uses unsupported vertex format!");
                     }
                     // This where we store the vertices until transformed 
-                    JVector[] allVertex = new JVector[meshPart.NumVertices];
+                    Vector3[] allVertex = new Vector3[meshPart.NumVertices];
                     // Read the vertices from the buffer in to the array 
-                    meshPart.VertexBuffer.GetData<JVector>(
+                    meshPart.VertexBuffer.GetData<Vector3>(
                         meshPart.VertexOffset * declaration.VertexStride + vertexPosition.Offset,
                         allVertex,
                         0,
@@ -71,7 +71,7 @@ namespace JitterDemo
                     // Transform them based on the relative bone location and the world if provided 
                     for (int i = 0; i != allVertex.Length; ++i)
                     {
-                        JVector.Transform(ref allVertex[i], ref xform, out allVertex[i]);
+                        Vector3.Transform(ref allVertex[i], ref xform, out allVertex[i]);
                     }
                     // Store the transformed vertices with those from all the other meshes in this model 
                     vertices.AddRange(allVertex);
@@ -115,14 +115,14 @@ namespace JitterDemo
             if (cvhs == null)
             {
 
-                List<JVector> jvecs = new List<JVector>();
+                List<Vector3> jvecs = new List<Vector3>();
                 List<TriangleVertexIndices> indices = new List<TriangleVertexIndices>();
 
                 ExtractData(jvecs, indices, model);
 
                 int[] convexHullIndices = JConvexHull.Build(jvecs, JConvexHull.Approximation.Level6);
 
-                List<JVector> hullPoints = new List<JVector>();
+                List<Vector3> hullPoints = new List<Vector3>();
                 for (int i = 0; i < convexHullIndices.Length; i++)
                 {
                     hullPoints.Add(jvecs[convexHullIndices[i]]);
@@ -148,7 +148,7 @@ namespace JitterDemo
             // But this is not the center of our graphical represantion, use the
             // "shift" property of the more complex shapes to deal with this.
             world.Translation = Conversion.ToXNAVector(body.Position +
-                JVector.Transform(hullShape.Shift, body.Orientation));
+                Vector3.Transform(hullShape.Shift, body.Orientation));
 
 
             Matrix[] boneTransforms = new Matrix[model.Bones.Count];

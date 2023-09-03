@@ -14,7 +14,7 @@
 
 //        //public JConvexHull ConvexHull = new JConvexHull();
 
-//        public ConvexHullPrimitive(GraphicsDevice device, List<JVector> pointCloud)
+//        public ConvexHullPrimitive(GraphicsDevice device, List<Vector3> pointCloud)
 //        {
 //            JConvexHull.Build(pointCloud,JConvexHull.Approximation.Level5);
 
