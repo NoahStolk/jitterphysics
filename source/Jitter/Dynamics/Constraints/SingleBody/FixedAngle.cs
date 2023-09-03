@@ -71,7 +71,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         private float biasFactor = 0.05f;
         private float softness = 0.0f;
 
-        private JMatrix orientation;
+        private Matrix4x4 orientation;
         private Vector3 accumulatedImpulse;
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// </summary>
         public float BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
 
-        public JMatrix InitialOrientation { get { return orientation; } set { orientation = value; } }
+        public Matrix4x4 InitialOrientation { get { return orientation; } set { orientation = value; } }
 
-        JMatrix effectiveMass;
+        Matrix4x4 effectiveMass;
         Vector3 bias;
         float softnessOverDt;
 
@@ -115,9 +115,9 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             effectiveMass.M22 += softnessOverDt;
             effectiveMass.M33 += softnessOverDt;
 
-            JMatrix.Inverse(ref effectiveMass, out effectiveMass);
+            Matrix4x4.Inverse(ref effectiveMass, out effectiveMass);
 
-            JMatrix q = JMatrix.Transpose(orientation) * body1.orientation;
+            Matrix4x4 q = Matrix4x4.Transpose(orientation) * body1.orientation;
             Vector3 axis;
 
             float x = q.M32 - q.M23;

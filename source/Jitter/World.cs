@@ -841,12 +841,12 @@ namespace Jitter
                     axis = Vector3.Multiply(body.angularVelocity, ((float)Math.Sin(0.5f * angle * timestep) / angle));
                 }
 
-                JQuaternion dorn = new JQuaternion(axis.X, axis.Y, axis.Z, (float)Math.Cos(angle * timestep * 0.5f));
-                JQuaternion ornA; JQuaternion.CreateFromMatrix(ref body.orientation, out ornA);
+                Quaternion dorn = new Quaternion(axis.X, axis.Y, axis.Z, (float)Math.Cos(angle * timestep * 0.5f));
+                Quaternion ornA; Quaternion.CreateFromMatrix(ref body.orientation, out ornA);
 
-                JQuaternion.Multiply(ref dorn, ref ornA, out dorn);
+                Quaternion.Multiply(ref dorn, ref ornA, out dorn);
 
-                dorn.Normalize(); JMatrix.CreateFromQuaternion(ref dorn, out body.orientation);
+                dorn.Normalize(); Matrix4x4.CreateFromQuaternion(ref dorn, out body.orientation);
             }
 
             if ((body.Damping & RigidBody.DampingType.Linear) != 0)

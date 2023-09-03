@@ -49,12 +49,12 @@ namespace Jitter.Dynamics
         [Flags]
         public enum DampingType { None = 0x00, Angular = 0x01, Linear = 0x02 }
 
-        internal JMatrix inertia;
-        internal JMatrix invInertia;
+        internal Matrix4x4 inertia;
+        internal Matrix4x4 invInertia;
 
-        internal JMatrix invInertiaWorld;
-        internal JMatrix orientation;
-        internal JMatrix invOrientation;
+        internal Matrix4x4 invInertiaWorld;
+        internal Matrix4x4 orientation;
+        internal Matrix4x4 invOrientation;
         internal Vector3 position;
         internal Vector3 linearVelocity;
         internal Vector3 angularVelocity;
@@ -114,9 +114,9 @@ namespace Jitter.Dynamics
                 }
                 else if (!isParticle && value)
                 {
-                    this.inertia = JMatrix.Zero;
-                    this.invInertia = this.invInertiaWorld = JMatrix.Zero;
-                    this.invOrientation = this.orientation = JMatrix.Identity;
+                    this.inertia = Matrix4x4.Zero;
+                    this.invInertia = this.invInertiaWorld = Matrix4x4.Zero;
+                    this.invOrientation = this.orientation = Matrix4x4.Identity;
                     inverseMass = 1.0f;
 
                     this.Shape.ShapeUpdated -= updatedHandler;
@@ -152,7 +152,7 @@ namespace Jitter.Dynamics
             hashCode = CalculateHash(instance);
 
             this.Shape = shape;
-            orientation = JMatrix.Identity;
+            orientation = Matrix4x4.Identity;
 
             if (!isParticle)
             {
@@ -162,9 +162,9 @@ namespace Jitter.Dynamics
             }
             else
             {
-                this.inertia = JMatrix.Zero;
-                this.invInertia = this.invInertiaWorld = JMatrix.Zero;
-                this.invOrientation = this.orientation = JMatrix.Identity;
+                this.inertia = Matrix4x4.Zero;
+                this.invInertia = this.invInertiaWorld = Matrix4x4.Zero;
+                this.invOrientation = this.orientation = Matrix4x4.Identity;
                 inverseMass = 1.0f;
             }
 
@@ -345,7 +345,7 @@ namespace Jitter.Dynamics
         public void SetMassProperties()
         {
             this.inertia = Shape.inertia;
-            JMatrix.Inverse(ref inertia, out invInertia);
+            Matrix4x4.Inverse(ref inertia, out invInertia);
             this.inverseMass = 1.0f / Shape.mass;
             useShapeMassProperties = true;
         }
@@ -358,14 +358,14 @@ namespace Jitter.Dynamics
         /// <param name="mass">The mass/inverse mass of the object.</param>
         /// <param name="setAsInverseValues">Sets the InverseInertia and the InverseMass
         /// to this values.</param>
-        public void SetMassProperties(JMatrix inertia, float mass, bool setAsInverseValues)
+        public void SetMassProperties(Matrix4x4 inertia, float mass, bool setAsInverseValues)
         {
             if (setAsInverseValues)
             {
                 if (!isParticle)
                 {
                     this.invInertia = inertia;
-                    JMatrix.Inverse(ref inertia, out this.inertia);
+                    Matrix4x4.Inverse(ref inertia, out this.inertia);
                 }
                 this.inverseMass = mass;
             }
@@ -374,7 +374,7 @@ namespace Jitter.Dynamics
                 if (!isParticle)
                 {
                     this.inertia = inertia;
-                    JMatrix.Inverse(ref inertia, out this.invInertia);
+                    Matrix4x4.Inverse(ref inertia, out this.invInertia);
                 }
                 this.inverseMass = 1.0f / mass;
             }
@@ -425,12 +425,12 @@ namespace Jitter.Dynamics
         /// <summary>
         /// The inertia currently used for this body.
         /// </summary>
-        public JMatrix Inertia { get { return inertia; } }
+        public Matrix4x4 Inertia { get { return inertia; } }
 
         /// <summary>
         /// The inverse inertia currently used for this body.
         /// </summary>
-        public JMatrix InverseInertia { get { return invInertia; } }
+        public Matrix4x4 InverseInertia { get { return invInertia; } }
 
         /// <summary>
         /// The velocity of the body.
@@ -473,7 +473,7 @@ namespace Jitter.Dynamics
         /// <summary>
         /// The current oriention of the body.
         /// </summary>
-        public JMatrix Orientation
+        public Matrix4x4 Orientation
         {
             get { return orientation; }
             set { orientation = value; Update(); }
@@ -507,7 +507,7 @@ namespace Jitter.Dynamics
         /// <summary>
         /// The inverse inertia tensor in world space.
         /// </summary>
-        public JMatrix InverseInertiaWorld
+        public Matrix4x4 InverseInertiaWorld
         {
             get
             {
@@ -529,8 +529,8 @@ namespace Jitter.Dynamics
                 // scale inertia
                 if (!isParticle)
                 {
-                    JMatrix.Multiply(ref Shape.inertia, value / Shape.mass, out inertia);
-                    JMatrix.Inverse(ref inertia, out invInertia);
+                    Matrix4x4.Multiply(ref Shape.inertia, value / Shape.mass, out inertia);
+                    Matrix4x4.Inverse(ref inertia, out invInertia);
                 }
 
                 inverseMass = 1.0f / value;
@@ -582,9 +582,9 @@ namespace Jitter.Dynamics
         {
             if (isParticle)
             {
-                this.inertia = JMatrix.Zero;
-                this.invInertia = this.invInertiaWorld = JMatrix.Zero;
-                this.invOrientation = this.orientation = JMatrix.Identity;
+                this.inertia = Matrix4x4.Zero;
+                this.invInertia = this.invInertiaWorld = Matrix4x4.Zero;
+                this.invOrientation = this.orientation = Matrix4x4.Identity;
                 this.boundingBox = shape.boundingBox;
                 boundingBox.Min = Vector3.Add(boundingBox.Min, this.position);
                 boundingBox.Max = Vector3.Add(boundingBox.Max, this.position);
@@ -594,7 +594,7 @@ namespace Jitter.Dynamics
             else
             {
                 // Given: Orientation, Inertia
-                JMatrix.Transpose(ref orientation, out invOrientation);
+                Matrix4x4.Transpose(ref orientation, out invOrientation);
                 this.Shape.GetBoundingBox(ref orientation, out boundingBox);
                 boundingBox.Min = Vector3.Add(boundingBox.Min, this.position);
                 boundingBox.Max = Vector3.Add(boundingBox.Max, this.position);
@@ -602,8 +602,8 @@ namespace Jitter.Dynamics
 
                 if (!isStatic)
                 {
-                    JMatrix.Multiply(ref invOrientation, ref invInertia, out invInertiaWorld);
-                    JMatrix.Multiply(ref invInertiaWorld, ref orientation, out invInertiaWorld);
+                    Matrix4x4.Multiply(ref invOrientation, ref invInertia, out invInertiaWorld);
+                    Matrix4x4.Multiply(ref invInertiaWorld, ref orientation, out invInertiaWorld);
                 }
             }
         }

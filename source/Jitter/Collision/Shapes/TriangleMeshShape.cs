@@ -176,7 +176,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The axis aligned bounding box of the shape.</param>
-        public override void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public override void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
             box = octree.rootNodeBox;
 

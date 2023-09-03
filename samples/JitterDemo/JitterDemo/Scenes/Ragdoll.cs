@@ -26,7 +26,7 @@ namespace JitterDemo.Scenes
 
             //RigidBody body = new RigidBody(new BoxShape(Vector3.One * 3));
             //body.Position = new Vector3(0, 5, 0);
-            //body.UseUserMassProperties(JMatrix.Zero, 1f, true);
+            //body.UseUserMassProperties(Matrix4x4.Zero, 1f, true);
             //Demo.World.AddBody(body);
 
             for (int i = 3; i < 8; i++)

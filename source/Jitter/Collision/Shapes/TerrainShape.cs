@@ -222,7 +222,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         public override void CalculateMassInertia()
         {
-            this.inertia = JMatrix.Identity;
+            this.inertia = Matrix4x4.Identity;
             this.Mass = 1.0f;
         }
 
@@ -232,7 +232,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The axis aligned bounding box of the shape.</param>
-        public override void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public override void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
             box = boundings;
 

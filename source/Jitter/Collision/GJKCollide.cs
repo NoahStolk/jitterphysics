@@ -40,8 +40,8 @@ namespace Jitter.Collision
 
         private static ResourcePool<VoronoiSimplexSolver> simplexSolverPool = new ResourcePool<VoronoiSimplexSolver>();
 
-        #region private static void SupportMapTransformed(ISupportMappable support, ref JMatrix orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
-        private static void SupportMapTransformed(ISupportMappable support, ref JMatrix orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
+        #region private static void SupportMapTransformed(ISupportMappable support, ref Matrix4x4 orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
+        private static void SupportMapTransformed(ISupportMappable support, ref Matrix4x4 orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
         {
             //Vector3.Transform(ref direction, ref invOrientation, out result);
             //support.SupportMapping(ref result, out result);
@@ -73,7 +73,7 @@ namespace Jitter.Collision
         /// <param name="position">The position of the shape.</param>
         /// <param name="point">The point to check.</param>
         /// <returns>Returns true if the point is within the shape, otherwise false.</returns>
-        public static bool Pointcast(ISupportMappable support, ref JMatrix orientation,ref Vector3 position,ref Vector3 point)
+        public static bool Pointcast(ISupportMappable support, ref Matrix4x4 orientation,ref Vector3 position,ref Vector3 point)
         {
             Vector3 arbitraryPoint; 
 
@@ -125,8 +125,8 @@ namespace Jitter.Collision
         }
 
 
-        public static bool ClosestPoints(ISupportMappable support1, ISupportMappable support2, ref JMatrix orientation1,
-            ref JMatrix orientation2, ref Vector3 position1, ref Vector3 position2,
+        public static bool ClosestPoints(ISupportMappable support1, ISupportMappable support2, ref Matrix4x4 orientation1,
+            ref Matrix4x4 orientation2, ref Vector3 position1, ref Vector3 position2,
             out Vector3 p1, out Vector3 p2, out Vector3 normal)
         {
 
@@ -186,8 +186,8 @@ namespace Jitter.Collision
         }
 
         #region TimeOfImpact Conservative Advancement - Depricated
-    //    public static bool TimeOfImpact(ISupportMappable support1, ISupportMappable support2, ref JMatrix orientation1,
-    //ref JMatrix orientation2, ref Vector3 position1, ref Vector3 position2, ref Vector3 sweptA, ref Vector3 sweptB,
+    //    public static bool TimeOfImpact(ISupportMappable support1, ISupportMappable support2, ref Matrix4x4 orientation1,
+    //ref Matrix4x4 orientation2, ref Vector3 position1, ref Vector3 position2, ref Vector3 sweptA, ref Vector3 sweptB,
     //out Vector3 p1, out Vector3 p2, out Vector3 normal)
     //    {
 
@@ -303,7 +303,7 @@ namespace Jitter.Collision
         /// ray the collision occured. The hitPoint is calculated by: origin+friction*direction.</param>
         /// <param name="normal">The normal from the ray collision.</param>
         /// <returns>Returns true if the ray hit the shape, false otherwise.</returns>
-        public static bool Raycast(ISupportMappable support, ref JMatrix orientation, ref JMatrix invOrientation,
+        public static bool Raycast(ISupportMappable support, ref Matrix4x4 orientation, ref Matrix4x4 invOrientation,
             ref Vector3 position,ref Vector3 origin,ref Vector3 direction, out float fraction, out Vector3 normal)
         {
             VoronoiSimplexSolver simplexSolver = simplexSolverPool.GetNew();

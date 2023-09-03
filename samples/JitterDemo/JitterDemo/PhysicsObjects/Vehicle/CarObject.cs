@@ -32,10 +32,10 @@ namespace JitterDemo.Vehicle
             World world = demo.World;
 
             CompoundShape.TransformedShape lower = new CompoundShape.TransformedShape(
-                new BoxShape(2.5f, 1f, 6.0f), JMatrix.Identity, Vector3.Zero);
+                new BoxShape(2.5f, 1f, 6.0f), Matrix4x4.Identity, Vector3.Zero);
 
             CompoundShape.TransformedShape upper = new CompoundShape.TransformedShape(
-                new BoxShape(2.0f, 0.5f, 3.0f), JMatrix.Identity, Vector3.Up * 0.75f + Vector3.Backward * 1.0f);
+                new BoxShape(2.0f, 0.5f, 3.0f), Matrix4x4.Identity, Vector3.Up * 0.75f + Vector3.Backward * 1.0f);
 
             CompoundShape.TransformedShape[] subShapes = { lower, upper };
 

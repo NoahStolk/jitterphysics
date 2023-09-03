@@ -110,7 +110,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The axis aligned bounding box of the shape.</param>
-        public override void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public override void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
             JBBox helpBox = JBBox.LargeBox;
             int length = this.Prepare(ref helpBox);
@@ -139,7 +139,7 @@ namespace Jitter.Collision.Shapes
             geomCen = Vector3.Zero;
 
             // TODO: calc this right
-            inertia = JMatrix.Identity;
+            inertia = Matrix4x4.Identity;
 
             Vector3 size; Vector3.Subtract(ref boundingBox.Max, ref boundingBox.Min, out size);
 

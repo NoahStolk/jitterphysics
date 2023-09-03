@@ -101,7 +101,7 @@ namespace Jitter.LinearMath
         /// <param name="position"></param>
         /// <param name="orientation"></param>
         /// <param name="result"></param>
-        internal void InverseTransform(ref Vector3 position, ref JMatrix orientation)
+        internal void InverseTransform(ref Vector3 position, ref Matrix4x4 orientation)
         {
             Vector3.Subtract(ref Max, ref position, out Max);
             Vector3.Subtract(ref Min, ref position, out Min);
@@ -116,21 +116,21 @@ namespace Jitter.LinearMath
 
             Vector3.TransposedTransform(ref center, ref orientation, out center);
 
-            JMatrix abs; JMath.Absolute(ref orientation, out abs);
+            Matrix4x4 abs; JMath.Absolute(ref orientation, out abs);
             Vector3.TransposedTransform(ref halfExtents, ref abs, out halfExtents);
 
             Vector3.Add(ref center, ref halfExtents, out Max);
             Vector3.Subtract(ref center, ref halfExtents, out Min);
         }
 
-        public void Transform(ref JMatrix orientation)
+        public void Transform(ref Matrix4x4 orientation)
         {
             Vector3 halfExtents = 0.5f * (Max - Min);
             Vector3 center = 0.5f * (Max + Min);
 
             Vector3.Transform(ref center, ref orientation, out center);
 
-            JMatrix abs; JMath.Absolute(ref orientation, out abs);
+            Matrix4x4 abs; JMath.Absolute(ref orientation, out abs);
             Vector3.Transform(ref halfExtents, ref abs, out halfExtents);
 
             Max = center + halfExtents;

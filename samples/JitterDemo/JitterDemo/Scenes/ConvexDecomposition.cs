@@ -36,7 +36,7 @@ namespace JitterDemo.Scenes
             {
                 transformedShapes[i] = new CompoundShape.TransformedShape();
                 transformedShapes[i].Shape = shapes[i];
-                transformedShapes[i].Orientation = JMatrix.Identity;
+                transformedShapes[i].Orientation = Matrix4x4.Identity;
                 transformedShapes[i].Position = -1.0f * shapes[i].Shift;
             }
 

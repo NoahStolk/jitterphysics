@@ -48,7 +48,7 @@ namespace Jitter.Collision.Shapes
     {
 
         // internal values so we can access them fast  without calling properties.
-        internal JMatrix inertia = JMatrix.Identity;
+        internal Matrix4x4 inertia = Matrix4x4.Identity;
         internal float mass = 1.0f;
 
         internal JBBox boundingBox = JBBox.LargeBox;
@@ -69,7 +69,7 @@ namespace Jitter.Collision.Shapes
         /// <summary>
         /// Returns the inertia of the untransformed shape.
         /// </summary>
-        public JMatrix Inertia { get { return inertia; } protected set { inertia = value; } }
+        public Matrix4x4 Inertia { get { return inertia; } protected set { inertia = value; } }
 
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The resulting axis aligned bounding box.</param>
-        public virtual void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public virtual void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
             // I don't think that this can be done faster.
             // 6 is the minimum number of SupportMap calls.
@@ -270,7 +270,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         public virtual void UpdateShape()
         {
-            GetBoundingBox(ref JMatrix.InternalIdentity, out boundingBox);
+            GetBoundingBox(ref Matrix4x4.InternalIdentity, out boundingBox);
 
             CalculateMassInertia();
             RaiseShapeUpdated();
@@ -283,12 +283,12 @@ namespace Jitter.Collision.Shapes
         /// <param name="centerOfMass"></param>
         /// <param name="inertia">Returns the inertia relative to the center of mass, not to the origin</param>
         /// <returns></returns>
-        #region  public static float CalculateMassInertia(Shape shape, out Vector3 centerOfMass, out JMatrix inertia)
+        #region  public static float CalculateMassInertia(Shape shape, out Vector3 centerOfMass, out Matrix4x4 inertia)
         public static float CalculateMassInertia(Shape shape, out Vector3 centerOfMass,
-            out JMatrix inertia)
+            out Matrix4x4 inertia)
         {
             float mass = 0.0f;
-            centerOfMass = Vector3.Zero; inertia = JMatrix.Zero;
+            centerOfMass = Vector3.Zero; inertia = Matrix4x4.Zero;
 
             if (shape is Multishape) throw new ArgumentException("Can't calculate inertia of multishapes.", "shape");
 
@@ -299,7 +299,7 @@ namespace Jitter.Collision.Shapes
             // create inertia of tetrahedron with vertices at
             // (0,0,0) (1,0,0) (0,1,0) (0,0,1)
             float a = 1.0f / 60.0f, b = 1.0f / 120.0f;
-            JMatrix C = new JMatrix(a, b, b, b, a, b, b, b, a);
+            Matrix4x4 C = new Matrix4x4(a, b, b, b, a, b, b, b, a);
 
             for (int i = 0; i < hullTriangles.Count; i += 3)
             {
@@ -307,7 +307,7 @@ namespace Jitter.Collision.Shapes
                 Vector3 column1 = hullTriangles[i + 1];
                 Vector3 column2 = hullTriangles[i + 2];
 
-                JMatrix A = new JMatrix(column0.X, column1.X, column2.X,
+                Matrix4x4 A = new Matrix4x4(column0.X, column1.X, column2.X,
                     column0.Y, column1.Y, column2.Y,
                     column0.Z, column1.Z, column2.Z);
 
@@ -315,7 +315,7 @@ namespace Jitter.Collision.Shapes
 
                 // now transform this canonical tetrahedron to the target tetrahedron
                 // inertia by a linear transformation A
-                JMatrix tetrahedronInertia = JMatrix.Multiply(A * C * JMatrix.Transpose(A), detA);
+                Matrix4x4 tetrahedronInertia = Matrix4x4.Multiply(A * C * Matrix4x4.Transpose(A), detA);
 
                 Vector3 tetrahedronCOM = (1.0f / 4.0f) * (hullTriangles[i + 0] + hullTriangles[i + 1] + hullTriangles[i + 2]);
                 float tetrahedronMass = (1.0f / 6.0f) * detA;
@@ -325,7 +325,7 @@ namespace Jitter.Collision.Shapes
                 mass += tetrahedronMass;
             }
 
-            inertia = JMatrix.Multiply(JMatrix.Identity, inertia.Trace()) - inertia;
+            inertia = Matrix4x4.Multiply(Matrix4x4.Identity, inertia.Trace()) - inertia;
             centerOfMass = centerOfMass * (1.0f / mass);
 
             float x = centerOfMass.X;
@@ -333,12 +333,12 @@ namespace Jitter.Collision.Shapes
             float z = centerOfMass.Z;
 
             // now translate the inertia by the center of mass
-            JMatrix t = new JMatrix(
+            Matrix4x4 t = new Matrix4x4(
                 -mass * (y * y + z * z), mass * x * y, mass * x * z,
                 mass * y * x, -mass * (z * z + x * x), mass * y * z,
                 mass * z * x, mass * z * y, -mass * (x * x + y * y));
 
-            JMatrix.Add(ref inertia, ref t, out inertia);
+            Matrix4x4.Add(ref inertia, ref t, out inertia);
 
             return mass;
         }

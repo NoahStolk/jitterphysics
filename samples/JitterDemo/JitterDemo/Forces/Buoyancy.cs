@@ -137,7 +137,7 @@ namespace Jitter.Forces
                         testVector.Y = body.Shape.BoundingBox.Min.Y + (diff.Y / (float)(subdivisions - 1)) * ((float)e);
                         testVector.Z = body.Shape.BoundingBox.Min.Z + (diff.Z / (float)(subdivisions - 1)) * ((float)k);
 
-                        JMatrix ident = JMatrix.Identity;
+                        Matrix4x4 ident = Matrix4x4.Identity;
                         Vector3 zero = Vector3.Zero;
 
                         if (ms != null)

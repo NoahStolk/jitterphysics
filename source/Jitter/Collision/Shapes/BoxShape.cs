@@ -89,9 +89,9 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The axis aligned bounding box of the shape.</param>
-        public override void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public override void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
-            JMatrix abs; JMath.Absolute(ref orientation, out abs);
+            Matrix4x4 abs; JMath.Absolute(ref orientation, out abs);
             Vector3 temp;
             Vector3.Transform(ref halfSize, ref abs, out temp);
 
@@ -109,7 +109,7 @@ namespace Jitter.Collision.Shapes
         {
             mass = size.X * size.Y * size.Z;
 
-            inertia = JMatrix.Identity;
+            inertia = Matrix4x4.Identity;
             inertia.M11 = (1.0f / 12.0f) * mass * (size.Y * size.Y + size.Z * size.Z);
             inertia.M22 = (1.0f / 12.0f) * mass * (size.X * size.X + size.Z * size.Z);
             inertia.M33 = (1.0f / 12.0f) * mass * (size.X * size.X + size.Y * size.Y);

@@ -234,7 +234,7 @@ namespace Jitter.Collision
                 float penetration;
                 bool result;
 
-                result = XenoCollide.Detect(myTriangle, otherTriangle, ref JMatrix.InternalIdentity, ref JMatrix.InternalIdentity,
+                result = XenoCollide.Detect(myTriangle, otherTriangle, ref Matrix4x4.InternalIdentity, ref Matrix4x4.InternalIdentity,
                     ref Vector3.InternalZero, ref Vector3.InternalZero, out point, out normal, out penetration);
 
                 if (result)
@@ -466,7 +466,7 @@ namespace Jitter.Collision
                     {
                         ms.SetCurrentShape(e);
 
-                        result = XenoCollide.Detect(ms, t, ref rigidBody.orientation, ref JMatrix.InternalIdentity,
+                        result = XenoCollide.Detect(ms, t, ref rigidBody.orientation, ref Matrix4x4.InternalIdentity,
                             ref rigidBody.position, ref Vector3.InternalZero, out point, out normal, out penetration);
 
                         if (result)
@@ -496,7 +496,7 @@ namespace Jitter.Collision
                     float penetration;
                     bool result;
 
-                    result = XenoCollide.Detect(rigidBody.Shape, t, ref rigidBody.orientation, ref JMatrix.InternalIdentity,
+                    result = XenoCollide.Detect(rigidBody.Shape, t, ref rigidBody.orientation, ref Matrix4x4.InternalIdentity,
                         ref rigidBody.position, ref Vector3.InternalZero, out point, out normal, out penetration);
 
                     if (result)

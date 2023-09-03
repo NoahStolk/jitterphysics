@@ -65,7 +65,7 @@ namespace Jitter.Collision
         private const int MaximumIterations = 34;
 
         private static void SupportMapTransformed(ISupportMappable support,
-            ref JMatrix orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
+            ref Matrix4x4 orientation, ref Vector3 position, ref Vector3 direction, out Vector3 result)
         {
             // THIS IS *THE* HIGH FREQUENCY CODE OF THE COLLLISION PART OF THE ENGINE
 
@@ -97,8 +97,8 @@ namespace Jitter.Collision
         /// <param name="normal">The normal pointing from body2 to body1.</param>
         /// <param name="penetration">Estimated penetration depth of the collision.</param>
         /// <returns>Returns true if there is a collision, false otherwise.</returns>
-        public static bool Detect(ISupportMappable support1, ISupportMappable support2, ref JMatrix orientation1,
-             ref JMatrix orientation2, ref Vector3 position1, ref Vector3 position2,
+        public static bool Detect(ISupportMappable support1, ISupportMappable support2, ref Matrix4x4 orientation1,
+             ref Matrix4x4 orientation2, ref Vector3 position1, ref Vector3 position2,
              out Vector3 point, out Vector3 normal, out float penetration)
         {
             // Used variables

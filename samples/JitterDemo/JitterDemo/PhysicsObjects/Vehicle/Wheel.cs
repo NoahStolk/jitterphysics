@@ -219,7 +219,7 @@ namespace JitterDemo
 
             Vector3 forward = new Vector3(-car.Orientation.M31, -car.Orientation.M32, -car.Orientation.M33);
 
-            Vector3 wheelFwd = Vector3.Transform(forward, JMatrix.CreateFromAxisAngle(Vector3.Up, SteerAngle / 360 * 2 * JMath.Pi));
+            Vector3 wheelFwd = Vector3.Transform(forward, Matrix4x4.CreateFromAxisAngle(Vector3.Up, SteerAngle / 360 * 2 * JMath.Pi));
             Vector3 wheelLeft = Vector3.Cross(Vector3.Up, wheelFwd); wheelLeft.Normalize();
             Vector3 wheelUp = Vector3.Cross(wheelFwd, wheelLeft);
 

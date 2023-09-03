@@ -13,7 +13,7 @@ namespace JitterDemo
             return new Vector3(vector.X, vector.Y, vector.Z);
         }
 
-        public static Matrix ToXNAMatrix(JMatrix matrix)
+        public static Matrix ToXNAMatrix(Matrix4x4 matrix)
         {
             return new Matrix(matrix.M11,
                             matrix.M12,
@@ -29,9 +29,9 @@ namespace JitterDemo
                             0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        public static JMatrix ToJitterMatrix(Matrix matrix)
+        public static Matrix4x4 ToJitterMatrix(Matrix matrix)
         {
-            JMatrix result;
+            Matrix4x4 result;
             result.M11 = matrix.M11;
             result.M12 = matrix.M12;
             result.M13 = matrix.M13;

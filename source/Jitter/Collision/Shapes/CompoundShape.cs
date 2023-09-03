@@ -47,8 +47,8 @@ namespace Jitter.Collision.Shapes
         {
             private Shape shape;
             internal Vector3 position;
-            internal JMatrix orientation;
-            internal JMatrix invOrientation;
+            internal Matrix4x4 orientation;
+            internal Matrix4x4 invOrientation;
             internal JBBox boundingBox;
 
             /// <summary>
@@ -66,7 +66,7 @@ namespace Jitter.Collision.Shapes
             /// <summary>
             /// The inverse orientation of the 'sub' shape.
             /// </summary>
-            public JMatrix InverseOrientation
+            public Matrix4x4 InverseOrientation
             {
                 get { return invOrientation; }
             }
@@ -74,10 +74,10 @@ namespace Jitter.Collision.Shapes
             /// <summary>
             /// The orienation of the 'sub' shape.
             /// </summary>
-            public JMatrix Orientation
+            public Matrix4x4 Orientation
             {
                 get { return orientation; }
-                set { orientation = value; JMatrix.Transpose(ref orientation, out invOrientation); UpdateBoundingBox(); }
+                set { orientation = value; Matrix4x4.Transpose(ref orientation, out invOrientation); UpdateBoundingBox(); }
             }
 
             public void UpdateBoundingBox()
@@ -94,11 +94,11 @@ namespace Jitter.Collision.Shapes
             /// <param name="shape">The shape.</param>
             /// <param name="orientation">The orientation this shape should have.</param>
             /// <param name="position">The position this shape should have.</param>
-            public TransformedShape(Shape shape, JMatrix orientation, Vector3 position)
+            public TransformedShape(Shape shape, Matrix4x4 orientation, Vector3 position)
             {
                 this.position = position;
                 this.orientation = orientation;
-                JMatrix.Transpose(ref orientation, out invOrientation);
+                Matrix4x4.Transpose(ref orientation, out invOrientation);
                 this.shape = shape;
                 this.boundingBox = new JBBox();
                 UpdateBoundingBox();
@@ -187,12 +187,12 @@ namespace Jitter.Collision.Shapes
 
         public override void CalculateMassInertia()
         {
-            base.inertia = JMatrix.Zero;
+            base.inertia = Matrix4x4.Zero;
             base.mass = 0.0f;
 
             for (int i = 0; i < Shapes.Length; i++)
             {
-                JMatrix currentInertia = Shapes[i].InverseOrientation * Shapes[i].Shape.Inertia * Shapes[i].Orientation;
+                Matrix4x4 currentInertia = Shapes[i].InverseOrientation * Shapes[i].Shape.Inertia * Shapes[i].Orientation;
                 Vector3 p = Shapes[i].Position * -1.0f;
                 float m = Shapes[i].Shape.Mass;
 
@@ -248,7 +248,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         /// <param name="orientation">The orientation of the shape.</param>
         /// <param name="box">The axis aligned bounding box of the shape.</param>
-        public override void GetBoundingBox(ref JMatrix orientation, out JBBox box)
+        public override void GetBoundingBox(ref Matrix4x4 orientation, out JBBox box)
         {
             box.Min = mInternalBBox.Min;
             box.Max = mInternalBBox.Max;
@@ -259,7 +259,7 @@ namespace Jitter.Collision.Shapes
             Vector3 center;
             Vector3.Transform(ref localCenter, ref orientation, out center);
 
-            JMatrix abs; JMath.Absolute(ref orientation, out abs);
+            Matrix4x4 abs; JMath.Absolute(ref orientation, out abs);
             Vector3 temp;
             Vector3.Transform(ref localHalfExtents, ref abs, out temp);
 

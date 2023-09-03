@@ -74,7 +74,7 @@ namespace Jitter.Dynamics.Constraints
 
         private Vector3 accumulatedImpulse;
 
-        private JMatrix initialOrientation1, initialOrientation2;
+        private Matrix4x4 initialOrientation1, initialOrientation2;
 
         /// <summary>
         /// Constraints two bodies to always have the same relative
@@ -87,13 +87,13 @@ namespace Jitter.Dynamics.Constraints
             initialOrientation2 = body2.orientation;
 
             //orientationDifference = body1.orientation * body2.invOrientation;
-            //orientationDifference = JMatrix.Transpose(orientationDifference);
+            //orientationDifference = Matrix4x4.Transpose(orientationDifference);
         }
 
         public Vector3 AppliedImpulse { get { return accumulatedImpulse; } }
 
-        public JMatrix InitialOrientationBody1 { get { return initialOrientation1; } set { initialOrientation1 = value; } }
-        public JMatrix InitialOrientationBody2 { get { return initialOrientation2; } set { initialOrientation2 = value; } }
+        public Matrix4x4 InitialOrientationBody1 { get { return initialOrientation1; } set { initialOrientation1 = value; } }
+        public Matrix4x4 InitialOrientationBody2 { get { return initialOrientation2; } set { initialOrientation2 = value; } }
 
         /// <summary>
         /// Defines how big the applied impulses can get.
@@ -105,7 +105,7 @@ namespace Jitter.Dynamics.Constraints
         /// </summary>
         public float BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
 
-        JMatrix effectiveMass;
+        Matrix4x4 effectiveMass;
         Vector3 bias;
         float softnessOverDt;
         
@@ -123,13 +123,13 @@ namespace Jitter.Dynamics.Constraints
             effectiveMass.M22 += softnessOverDt;
             effectiveMass.M33 += softnessOverDt;
 
-            JMatrix.Inverse(ref effectiveMass, out effectiveMass);
+            Matrix4x4.Inverse(ref effectiveMass, out effectiveMass);
 
-            JMatrix orientationDifference;
-            JMatrix.Multiply(ref initialOrientation1, ref initialOrientation2, out orientationDifference);
-            JMatrix.Transpose(ref orientationDifference, out orientationDifference);
+            Matrix4x4 orientationDifference;
+            Matrix4x4.Multiply(ref initialOrientation1, ref initialOrientation2, out orientationDifference);
+            Matrix4x4.Transpose(ref orientationDifference, out orientationDifference);
 
-            JMatrix q = orientationDifference * body2.invOrientation * body1.orientation;
+            Matrix4x4 q = orientationDifference * body2.invOrientation * body1.orientation;
             Vector3 axis;
 
             float x = q.M32 - q.M23;

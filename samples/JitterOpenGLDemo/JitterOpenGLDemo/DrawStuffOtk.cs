@@ -49,7 +49,7 @@ namespace JitterOpenGLDemo
             return new float[4] { vector.X, vector.Y, vector.Z, 0.0f };
         }
 
-        public static float[] ToFloat(JMatrix matrix)
+        public static float[] ToFloat(Matrix4x4 matrix)
         {
             return new float[12] { matrix.M11, matrix.M21, matrix.M31, 0.0f,
                                    matrix.M12, matrix.M22, matrix.M32, 0.0f,
@@ -861,7 +861,7 @@ namespace JitterOpenGLDemo
             GL.Vertex3(pos2[0], pos2[1], pos2[2]);
             GL.End();
         }
-        protected void dsDrawSphere(Vector3 pos, JMatrix R, float radius)
+        protected void dsDrawSphere(Vector3 pos, Matrix4x4 R, float radius)
         {
             float[] pos2 = Conversion.ToFloat(pos);
             float[] R2 = Conversion.ToFloat(R);
@@ -904,7 +904,7 @@ namespace JitterOpenGLDemo
                 drawSphereShadow(pos[0], pos[1], pos[2], radius);
             }
         }
-        protected void dsDrawTriangle(Vector3 pos, JMatrix R, float[] vAll, int v0, int v1,
+        protected void dsDrawTriangle(Vector3 pos, Matrix4x4 R, float[] vAll, int v0, int v1,
                                        int v2, bool solid)
         {
             if (current_state != 2)
@@ -915,7 +915,7 @@ namespace JitterOpenGLDemo
             drawTriangle(vAll, v0, v1, v2, solid);
             GL.PopMatrix();
         }
-        public void dsDrawTriangle(Vector3 pos, JMatrix R,
+        public void dsDrawTriangle(Vector3 pos, Matrix4x4 R,
                                     Vector3 v0, Vector3 v1,
                                     Vector3 v2, bool solid)
         {
@@ -1000,7 +1000,7 @@ namespace JitterOpenGLDemo
                 throw new InvalidOperationException(op.ToString());
             }
         }
-        private void setTransform(Vector3 pos, JMatrix R)
+        private void setTransform(Vector3 pos, Matrix4x4 R)
         {
             //GLdouble
             double[] matrix = new double[16];
@@ -1158,7 +1158,7 @@ namespace JitterOpenGLDemo
                 GL.Vertex3(p3[0], p3[1], p3[2]);
             }
         }
-        public void dsDrawConvex(Vector3 pos, JMatrix R,
+        public void dsDrawConvex(Vector3 pos, Matrix4x4 R,
                                 double[] _planes, int _planecount,
                                 double[] _points,
                                 int _pointcount,
@@ -1208,7 +1208,7 @@ namespace JitterOpenGLDemo
                 GL.End();
             }
         }
-        protected void dsDrawCapsule(Vector3 pos, JMatrix R,
+        protected void dsDrawCapsule(Vector3 pos, Matrix4x4 R,
             float length, float radius)
         {
             float[] pos2 = Conversion.ToFloat(pos);
@@ -1329,7 +1329,7 @@ namespace JitterOpenGLDemo
                 start_ny = start_ny2;
             }
         }
-        protected void dsDrawCylinder(Vector3 pos, JMatrix R, float length, float radius)
+        protected void dsDrawCylinder(Vector3 pos, Matrix4x4 R, float length, float radius)
         {
             float[] pos2 = Conversion.ToFloat(pos);
             float[] R2 = Conversion.ToFloat(R);
@@ -1469,7 +1469,7 @@ namespace JitterOpenGLDemo
             GL.Vertex3(lx, -ly, -lz);
             GL.End();
         }
-        protected void dsDrawBox(Vector3 pos, JMatrix R, Vector3 sides)
+        protected void dsDrawBox(Vector3 pos, Matrix4x4 R, Vector3 sides)
         {
             float[] pos2 = Conversion.ToFloat(pos);
             float[] R2 = Conversion.ToFloat(R);

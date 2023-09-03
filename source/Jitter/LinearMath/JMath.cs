@@ -122,8 +122,8 @@ namespace Jitter.LinearMath
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <param name="result">The absolute matrix.</param>
-        #region public static void Absolute(ref JMatrix matrix,out JMatrix result)
-        public static void Absolute(ref JMatrix matrix,out JMatrix result)
+        #region public static void Absolute(ref Matrix4x4 matrix,out Matrix4x4 result)
+        public static void Absolute(ref Matrix4x4 matrix,out Matrix4x4 result)
         {
             result.M11 = Math.Abs(matrix.M11);
             result.M12 = Math.Abs(matrix.M12);

@@ -77,7 +77,7 @@ namespace Jitter.Collision.Shapes
             mass = (1.0f / 3.0f) * JMath.Pi * radius * radius * height;
 
             // inertia through center of mass axis.
-            inertia = JMatrix.Identity;
+            inertia = Matrix4x4.Identity;
             inertia.M11 = (3.0f / 80.0f) * mass * (radius * radius + 4 * height * height);
             inertia.M22 = (3.0f / 10.0f) * mass * radius * radius;
             inertia.M33 = (3.0f / 80.0f) * mass * (radius * radius + 4 * height * height);

@@ -520,7 +520,7 @@ namespace Jitter.Dynamics
             throw new NotImplementedException();
         }
 
-        public void Rotate(JMatrix orientation, Vector3 center)
+        public void Rotate(Matrix4x4 orientation, Vector3 center)
         {
             for (int i = 0; i < points.Count; i++)
             {
@@ -576,7 +576,7 @@ namespace Jitter.Dynamics
                     if (!(t.VertexBody1 == points[i] || t.VertexBody2 == points[i] || t.VertexBody3 == points[i]))
                     {
                         if (XenoCollide.Detect(points[i].Shape, t, ref points[i].orientation,
-                            ref JMatrix.InternalIdentity, ref points[i].position, ref Vector3.InternalZero,
+                            ref Matrix4x4.InternalIdentity, ref points[i].position, ref Vector3.InternalZero,
                             out point, out normal, out penetration))
                         {
                             int nearest = CollisionSystem.FindNearestTrianglePoint(this, queryList[e], ref point);

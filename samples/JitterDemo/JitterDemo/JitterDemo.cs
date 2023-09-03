@@ -258,7 +258,7 @@ namespace JitterDemo
                     if (grabConstraint != null) World.RemoveConstraint(grabConstraint);
 
                     Vector3 lanchor = hitPoint - grabBody.Position;
-                    lanchor = Vector3.Transform(lanchor, JMatrix.Transpose(grabBody.Orientation));
+                    lanchor = Vector3.Transform(lanchor, Matrix4x4.Transpose(grabBody.Orientation));
 
                     grabConstraint = new SingleBodyConstraints.PointOnPoint(grabBody, lanchor);
                     grabConstraint.Softness = 0.01f;
@@ -379,9 +379,9 @@ namespace JitterDemo
                     Shape b2 = new BoxShape(new Vector3(1, 1, 3));
                     Shape b3 = new CylinderShape(3.0f, 0.5f);
 
-                    CompoundShape.TransformedShape t1 = new CompoundShape.TransformedShape(b1, JMatrix.Identity, Vector3.Zero);
-                    CompoundShape.TransformedShape t2 = new CompoundShape.TransformedShape(b2, JMatrix.Identity, Vector3.Zero);
-                    CompoundShape.TransformedShape t3 = new CompoundShape.TransformedShape(b3, JMatrix.Identity, new Vector3(0, 0, 0));
+                    CompoundShape.TransformedShape t1 = new CompoundShape.TransformedShape(b1, Matrix4x4.Identity, Vector3.Zero);
+                    CompoundShape.TransformedShape t2 = new CompoundShape.TransformedShape(b2, Matrix4x4.Identity, Vector3.Zero);
+                    CompoundShape.TransformedShape t3 = new CompoundShape.TransformedShape(b3, Matrix4x4.Identity, new Vector3(0, 0, 0));
 
                     CompoundShape ms = new CompoundShape(new CompoundShape.TransformedShape[3] { t1, t2, t3 });
 
@@ -456,7 +456,7 @@ namespace JitterDemo
         #endregion
 
         #region add draw matrices to the different primitives
-        private void AddShapeToDrawList(Shape shape, JMatrix ori, Vector3 pos)
+        private void AddShapeToDrawList(Shape shape, Matrix4x4 ori, Vector3 pos)
         {
             Primitives3D.GeometricPrimitive primitive = null;
             Matrix scaleMatrix = Matrix.Identity;
@@ -509,18 +509,18 @@ namespace JitterDemo
             else
             {
                 CompoundShape cShape = rb.Shape as CompoundShape;
-                JMatrix orientation = rb.Orientation;
+                Matrix4x4 orientation = rb.Orientation;
                 Vector3 position = rb.Position;
 
                 foreach (var ts in cShape.Shapes)
                 {
                     Vector3 pos = ts.Position;
-                    JMatrix ori = ts.Orientation;
+                    Matrix4x4 ori = ts.Orientation;
 
                     Vector3.Transform(ref pos,ref orientation,out pos);
                     Vector3.Add(ref pos, ref position, out pos);
 
-                    JMatrix.Multiply(ref ori, ref orientation, out ori);
+                    Matrix4x4.Multiply(ref ori, ref orientation, out ori);
 
                     AddShapeToDrawList(ts.Shape, ori, pos);
                 }
