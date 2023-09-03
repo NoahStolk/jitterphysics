@@ -38,7 +38,6 @@ namespace Jitter.LinearMath
 
         private const float ZeroEpsilonSq = JMath.Epsilon * JMath.Epsilon;
         internal static JVector InternalZero;
-        internal static JVector Arbitrary;
 
         /// <summary>The X component of the vector.</summary>
         public float X;
@@ -105,7 +104,6 @@ namespace Jitter.LinearMath
             Forward = new JVector(0, 0, -1);
             MinValue = new JVector(float.MinValue);
             MaxValue = new JVector(float.MaxValue);
-            Arbitrary = new JVector(1, 1, 1);
             InternalZero = Zero;
         }
         #endregion
